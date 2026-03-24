@@ -19,6 +19,10 @@ ActiveVista is a high-performance **Full-Stack Fitness Intelligence Platform** d
 
 ## 🏗️ SYSTEM ARCHITECTURE
 
+<div align="center">
+  <img src="docs/architecture/tech_stack.png" width="80%" alt="ActiveVista Tech Stack" />
+</div>
+
 ActiveVista follows a modern **MERN (MongoDB, Express, React, Node)** stack with advanced tactical integrations:
 
 ### **1. Unified Athlete Interface (Frontend)**
@@ -36,6 +40,10 @@ ActiveVista follows a modern **MERN (MongoDB, Express, React, Node)** stack with
 ### **3. Data Vault (Database)**
 - **Persistence**: **MongoDB Atlas** for high-availability document storage.
 - **Schema Design**: Multi-collection architecture including `Users`, `Workouts`, `UserPlans`, and `StepsModel` for relational-style querying in a NoSQL environment.
+
+<div align="center">
+  <img src="docs/architecture/dashboard_flow.png" width="80%" alt="Dashboard Architecture" />
+</div>
 
 ---
 
@@ -56,6 +64,16 @@ What ActiveVista provides to the athlete:
 ### 👣 **PHYSIOLOGICAL TRACKING**
 - **Dynamic Steps**: Input daily step counts and receive instant calculations for distance (KM) and energy expenditure (KCAL).
 - **Free-Form Logging**: Log ad-hoc workouts with precise tracking of sets, reps, weight, and session duration.
+
+---
+
+## 🧭 NAVIGATION MAP
+
+<div align="center">
+  <img src="docs/architecture/sitemap.png" width="80%" alt="ActiveVista Sitemap" />
+</div>
+
+The platform is designed with an **Athlete-Centric Workflow**, moving seamlessly from high-level tactical overviews to deep per-session logging through its unified navigation system.
 
 ---
 
