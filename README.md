@@ -1,104 +1,116 @@
-# ⚡ ACTIVE VISTA
-### **THE FUTURE OF ATHLETIC INTELLIGENCE**
+<div align="center">
+
+# 💎 ACTIVE VISTA
+
+### **Next-Gen Fitness Intelligence Command Center**
 
 ---
 
-<p align="center">
-  <img src="client/public/architect/tech_stack.png" width="90%" alt="ActiveVista System Architecture" />
-</p>
+`DEEP VOID BLACK` • `GLOW BLUE ACCENTS` • `GLASSMORPHIC DESIGN`
 
 ---
 
-## 🌌 THE MISSION
-**ActiveVista** is a high-performance fitness command center designed to transform every training session into actionable intelligence. By combining a premium, **glassmorphic UI** with a robust full-stack foundation, it provides athletes with the tactical oversight required to dominate their fitness goals.
+</div>
+
+## 🌌 OVERVIEW
+ActiveVista is a high-performance **Full-Stack Fitness Intelligence Platform** designed to bridge the gap between physical training and digital analytics. It transforms complex workout data into a cinematic, intuitive experience through a premium, dark-mode-first architecture.
 
 ---
 
 ## 🏗️ SYSTEM ARCHITECTURE
-Our architecture is engineered for low-latency data synchronization and high-fidelity visual rendering.
 
-### **The Tactical Stack**
-*   **Tactical UI**: Built on **React 19** and **Vite 7** for near-zero millisecond hot module replacement.
-*   **Styling Core**: Custom **Tailwind CSS v4** implementation focusing on depth, translucency, and glow effects.
-*   **Mission Logic**: **Express 5** backend managing JWT-secured mission handshakes and physiological data processing.
-*   **Data Vault**: **MongoDB Atlas** high-availability storage for athlete profiles and training history.
+<div align="center">
+  <img src="client/public/architect/tech_stack.png" width="80%" alt="ActiveVista Tech Stack" />
+</div>
 
-<p align="center">
-  <img src="client/public/architect/dashboard_flow.png" width="90%" alt="Dashboard Intelligence Flow" />
-</p>
+ActiveVista follows a modern **MERN (MongoDB, Express, React, Node)** stack with advanced tactical integrations:
 
----
+### **1. Unified Athlete Interface (Frontend)**
+- **Framework**: Built on **React 19** and **Vite 7** for near-instant rendering and ultra-fast hot module replacement.
+- **Styling Core**: Utilizes **Tailwind CSS v4** with a custom-engineered design system focused on *Glassmorphism* (blur effects, subtle borders, and deep layering).
+- **Motion Engine**: Driven by **Framer Motion** for physics-based animations and micro-interactions that make the dashboard feel "alive."
+- **Component Strategy**: Leverages **Radix UI** primitives for accessible, high-performance interactive elements (Dialogs, HoverCards, Tooltips).
 
-## ⚡ CORE CAPABILITIES
+### **2. Intelligence Engine (Backend)**
+- **Runtime**: **Node.js** with the latest **Express 5** framework.
+- **Security**: Stateless **JWT (JSON Web Tokens)** authentication with custom Axios interceptors for secure data handshakes.
+- **Data Modeling**: **Mongoose 8** ODM with pre-save middleware hooks for calculating physiological metrics (like steps-to-calories conversion).
+- **API Pattern**: RESTful architecture with a centralized Controller/Route pattern overseeing User Auth, Workouts, Steps, and Mission Plans.
 
-### **1. THE COMMAND CENTER**
-Experience real-time telemetry of your training progress through an high-output dashboard.
-- **Performance Intelligence**: Dynamic charts visualize weekly consistency and volume distribution.
-- **Strategic Breakdown**: Automatic category classification (Cardio, Strength, Flexibility) derived from mission data.
-- **Tactical Totals**: Persistent tracking of total workouts, cumulative calories, and average intensity.
+### **3. Data Vault (Database)**
+- **Persistence**: **MongoDB Atlas** for high-availability document storage.
+- **Schema Design**: Multi-collection architecture including `Users`, `Workouts`, `UserPlans`, and `StepsModel` for relational-style querying in a NoSQL environment.
 
-### **2. MISSION PROTOCOLS**
-Deploy and track structured 30-day training missions.
-- **Protocol Management**: Activate elite pre-seeded plans or switch between missions on the fly.
-- **Daily Execution**: A 30-day tactical calendar ensure no objective is missed.
-- **Evolution Logic**: Plans adapt based on your difficulty level and historical performance.
-
-### **3. PHYSIOLOGICAL TELEMETRY**
-- **Dynamic Steps Tracker**: Input step volume with auto-calculating mileage and energy expenditure.
-- **Tactical Free-Log**: Log freestyle sessions with precise set, rep, and duration tracking.
+<div align="center">
+  <img src="client/public/architect/dashboard_flow.png" width="80%" alt="Dashboard Architecture" />
+</div>
 
 ---
 
-## 🧭 PLATFORM SITEMAP
+## ⚡ MISSION CAPABILITIES
 
-<p align="center">
-  <img src="client/public/architect/sitemap.png" width="90%" alt="ActiveVista Sitemap" />
-</p>
+What ActiveVista provides to the athlete:
 
-Our navigation is designed for **Minimal Friction**, ensuring athletes can move from the login handshake to mission logging in under three interactions.
+### 🎯 **INTELLIGENT DASHBOARD**
+- **Tactical Summary**: At-a-glance metrics for total sessions, cumulative calories, and weekly intensity.
+- **Plan Progress**: Real-time tracking of 30-day mission protocols with streak counters and completion percentages.
+- **Sector Analysis**: Interactive charts showing workout distribution across Cardio, Strength, Flexibility, and more.
+
+### 📅 **30-DAY MISSION PROTOCOLS**
+- **Seeded Plans**: Automated deployment of high-intensity training plans based on user difficulty level.
+- **Mission Control**: Activate, switch, or terminate plans dynamically as your training objectives evolve.
+- **Day-by-Day Execution**: A tactical calendar mapping every workout required to reach the mission objective.
+
+### 👣 **PHYSIOLOGICAL TRACKING**
+- **Dynamic Steps**: Input daily step counts and receive instant calculations for distance (KM) and energy expenditure (KCAL).
+- **Free-Form Logging**: Log ad-hoc workouts with precise tracking of sets, reps, weight, and session duration.
 
 ---
 
-## 🧬 TECHNICAL SPECIFICATIONS
+## 🧭 NAVIGATION MAP
 
-| COMPONENT | TECHNOLOGY | ROLE |
+<div align="center">
+  <img src="client/public/architect/sitemap.png" width="80%" alt="ActiveVista Sitemap" />
+</div>
+
+The platform is designed with an **Athlete-Centric Workflow**, moving seamlessly from high-level tactical overviews to deep per-session logging through its unified navigation system.
+
+---
+
+## 🧬 TECHNOLOGY STACK
+
+| COMPONENT | TECHNOLOGY | SPECIFICATION |
 | :--- | :--- | :--- |
-| **Foundation** | React 19 / Vite 7 | Core UI Architecture |
-| **Aesthetics** | Tailwind 4 / Framer Motion | Visual Identity & Motion |
-| **Intelligence** | Express 5 / Node.js | API & Business Logic |
-| **Storage** | Mongoose 8 / MongoDB | Athlete Data Persistence |
-| **Security** | JWT / Bcrypt | Secure Tactical Access |
+| **UI Library** | React 19 | Enterprise-grade component architecture |
+| **Styling** | Tailwind CSS v4 | Next-gen utility-first design |
+| **Build Tool** | Vite 7 | Optimized development experience |
+| **Animation** | Framer Motion | High-performance cinematic motion |
+| **API Framework** | Express 5 | Robust and scalable server logic |
+| **ODM** | Mongoose 8 | Advanced MongoDB data modeling |
+| **Icons** | Lucide React | Modern, clean iconography |
+| **Auth** | JWT / Bcrypt | Secure, encrypted user sessions |
 
 ---
 
-## 📡 DEPLOYMENT ORDERS
+## 📡 DEPLOYMENT COMMANDS
 
-### **Initialize Phase**
+### **Primary Setup**
 ```bash
-# Clone the repository
+# Clone the tactical data
 git clone https://github.com/prasadaniket/ActiveVista.git
 
-# Install Assets
+# Initialize Assets
 cd ActiveVista
 npm install --prefix client
 npm install --prefix server
 ```
 
-### **Configure Communications**
-Create a `.env` file in the `/server` directory:
+### **Initialize Environment**
+In `/server/.env`:
 ```env
 MONGODB_URL=your_mongodb_uri
-JWT=your_tactical_encryption_key
+JWT=your_tactical_key
 PORT=4000
-```
-
-### **Execute Launch**
-```bash
-# Launch Mission Control
-cd server && npm run dev
-
-# Initialize Stealth UI
-cd client && npm run dev
 ```
 
 ---
