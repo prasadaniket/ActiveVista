@@ -73,14 +73,14 @@ const CategoryChart = ({ data, stepsData }) => {
   const most = [...categories].sort((a, b) => (b.value || 0) - (a.value || 0))[0];
 
   return (
-    <Card className="bg-white shadow-modern border-0 card-hover">
+    <Card className="glass-panel border-0 card-hover">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
-            <PieChart className="h-5 w-5 mr-2 text-indigo-600" />
+          <CardTitle className="text-xl font-bold text-text flex items-center">
+            <PieChart className="h-5 w-5 mr-2 text-primary" />
             Workout Categories
           </CardTitle>
-          <div className="gradient-secondary text-white px-3 py-1 rounded-full text-sm font-medium">
+          <div className="bg-primary/20 text-primary border border-primary/30 px-3 py-1 rounded-full text-sm font-medium">
             {total} cal
           </div>
         </div>
@@ -96,7 +96,7 @@ const CategoryChart = ({ data, stepsData }) => {
                 cy={size / 2}
                 r={radius}
                 fill="transparent"
-                stroke="#e5e7eb"
+                stroke="rgba(255, 255, 255, 0.05)"
                 strokeWidth={stroke}
               />
               {/* Segments */}
@@ -119,8 +119,8 @@ const CategoryChart = ({ data, stepsData }) => {
             </svg>
             {/* Center label */}
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="text-2xl font-bold text-gray-900">{total}</div>
-              <div className="text-xs text-gray-500">calories</div>
+              <div className="text-2xl font-bold text-text">{total}</div>
+              <div className="text-xs text-muted">calories</div>
             </div>
           </div>
 
@@ -131,12 +131,12 @@ const CategoryChart = ({ data, stepsData }) => {
               return (
                 <div key={idx} className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: c.color }} />
-                    <span className="text-sm font-medium text-gray-900">{c.name}</span>
+                    <span className="inline-block w-3 h-3 rounded-sm shadow-[0_0_8px_currentColor]" style={{ backgroundColor: c.color }} />
+                    <span className="text-sm font-medium text-text">{c.name}</span>
                   </div>
-                  <div className="text-sm text-gray-700">
+                  <div className="text-sm text-muted">
                     <span className="font-semibold mr-1">{c.value} cal</span>
-                    <span className="text-gray-400">({pct}%)</span>
+                    <span className="text-muted/50">({pct}%)</span>
                   </div>
                 </div>
               );
@@ -145,15 +145,15 @@ const CategoryChart = ({ data, stepsData }) => {
         </div>
 
         {/* Summary */}
-        <div className="mt-6 pt-4 border-t border-gray-100">
+        <div className="mt-6 pt-4 border-t border-white/10">
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div className="text-center">
-              <div className="text-2xl font-bold text-indigo-600">{most?.value || 0} cal</div>
-              <div className="text-gray-600">Top category</div>
+              <div className="text-2xl font-bold text-primary">{most?.value || 0} cal</div>
+              <div className="text-muted">Top category</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">{categories.length}</div>
-              <div className="text-gray-600">Active categories</div>
+              <div className="text-2xl font-bold text-accent">{categories.length}</div>
+              <div className="text-muted">Active categories</div>
             </div>
           </div>
         </div>

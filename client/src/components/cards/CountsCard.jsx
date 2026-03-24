@@ -34,10 +34,10 @@ const CountsCard = ({ item, data, stepsData, index = 0 }) => {
   // Get appropriate icon background color
   const getIconBgClass = () => {
     const bgClasses = [
-      "bg-indigo-100",
-      "bg-blue-100",
-      "bg-green-100", 
-      "bg-orange-100"
+      "bg-indigo-500/20",
+      "bg-blue-500/20",
+      "bg-green-500/20", 
+      "bg-orange-500/20"
     ];
     return bgClasses[index % bgClasses.length];
   };
@@ -47,13 +47,13 @@ const CountsCard = ({ item, data, stepsData, index = 0 }) => {
   const trendValue = Math.floor(Math.random() * 20) + 1;
 
   return (
-    <Card className="group relative overflow-hidden bg-white shadow-modern border-0 card-hover">
-      <div className={`absolute inset-0 ${getGradientClass()} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
+    <Card className="group relative overflow-hidden glass-panel border-0 card-hover">
+      <div className={`absolute inset-0 ${getGradientClass()} opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
       <CardContent className="relative p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
-            <p className="text-sm font-medium text-gray-600 mb-1">{item.name}</p>
-            <p className="text-3xl font-bold text-gray-900 mb-2">
+            <p className="text-sm font-medium text-muted mb-1">{item.name}</p>
+            <p className="text-3xl font-bold text-text mb-2">
               {typeof value === 'number' ? value.toLocaleString() : value}
             </p>
             <div className="flex items-center space-x-1">
@@ -65,18 +65,18 @@ const CountsCard = ({ item, data, stepsData, index = 0 }) => {
               <span className={`text-sm font-medium ${trend === 'up' ? 'text-green-600' : 'text-red-600'}`}>
                 +{trendValue}%
               </span>
-              <span className="text-sm text-gray-500">vs last week</span>
+              <span className="text-sm text-muted">vs last week</span>
             </div>
           </div>
           <div className={`w-14 h-14 rounded-2xl ${getIconBgClass()} flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
-            <item.icon className="h-7 w-7 text-gray-700" />
+            <item.icon className="h-7 w-7 text-white" />
           </div>
         </div>
         
         {/* Progress bar */}
-        <div className="w-full bg-gray-200 rounded-full h-2">
+        <div className="w-full bg-white/10 rounded-full h-2">
           <div 
-            className={`h-2 rounded-full ${getGradientClass()} transition-all duration-500`}
+            className={`h-2 rounded-full ${getGradientClass()} transition-all duration-500 shadow-[0_0_10px_currentColor]`}
             style={{ width: `${Math.min((value / 1000) * 100, 100)}%` }}
           ></div>
         </div>

@@ -31,20 +31,15 @@ axiosInstance.interceptors.response.use(
     console.error("Global Axios Error:", error);
     
     if (!error.response) {
-      // Network error
-      alert("Network error! Backend not reachable. Please check if the server is running.");
+      // Network error - log only, let component handle
+      console.error("Network error! Backend not reachable. Please check if the server is running.");
     } else if (error.response.status === 401) {
       // Token expired or invalid - redirect to login
       localStorage.removeItem("fittrack-app-token");
-      alert("Session expired. Please login again.");
-      window.location.href = "/";
-    } else if (error.response.status >= 500) {
-      alert("Server error! Please try again later.");
-    } else if (error.response.data?.message) {
-      alert(error.response.data.message);
-    } else {
-      alert("An unexpected error occurred. Please try again.");
+      window.location.href = "/auth";
     }
+    // For other errors (4xx, 5xx), let the calling component handle it
+    // via error.response.data — do NOT alert() here
 
     return Promise.reject(error);
   }

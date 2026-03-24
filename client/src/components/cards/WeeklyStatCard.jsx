@@ -49,15 +49,15 @@ const WeeklyStatCard = ({ data, stepsData }) => {
   );
 
   return (
-    <Card className="bg-white shadow-modern border-0 card-hover">
+    <Card className="glass-panel border-0 card-hover">
       <CardHeader className="pb-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
-            <Calendar className="h-5 w-5 mr-2 text-indigo-600" />
+          <CardTitle className="text-xl font-bold text-text flex items-center">
+            <Calendar className="h-5 w-5 mr-2 text-primary" />
             Weekly Activity
           </CardTitle>
           <div className="flex items-center space-x-2">
-            <div className="gradient-primary text-white px-3 py-1 rounded-full text-sm font-medium">
+            <div className="gradient-primary shadow-[0_0_10px_var(--color-primary)] opacity-90 text-white px-3 py-1 rounded-full text-sm font-medium">
               {avg}% avg
             </div>
             <div className="flex items-center space-x-1 text-orange-600 text-sm">
@@ -75,26 +75,26 @@ const WeeklyStatCard = ({ data, stepsData }) => {
             const heightPct = maxValue > 0 ? (val / maxValue) * 100 : 0;
             return (
               <div key={`${stat.day}-${idx}`} className="flex-1 flex flex-col items-center">
-                <div className="w-full bg-gray-200 rounded-t-md rounded-b h-32 relative overflow-hidden">
+                <div className="w-full bg-white/5 rounded-t-md rounded-b h-32 relative overflow-hidden">
                   <div
-                    className="absolute bottom-0 left-0 right-0 gradient-primary rounded-t-md transition-all duration-700"
+                    className="absolute bottom-0 left-0 right-0 gradient-primary rounded-t-md transition-all duration-700 shadow-[0_-5px_15px_rgba(18,97,160,0.5)]"
                     style={{ height: `${heightPct}%` }}
                   >
                   </div>
                 </div>
-                <div className="mt-2 text-xs font-medium text-gray-700">{stat.day}</div>
-                <div className="text-[10px] text-gray-500">{val}%</div>
+                <div className="mt-2 text-xs font-medium text-muted">{stat.day}</div>
+                <div className="text-[10px] text-muted/50">{val}%</div>
               </div>
             );
           })}
         </div>
 
         {/* Summary */}
-        <div className="mt-6 pt-4 border-t border-gray-100">
+        <div className="mt-6 pt-4 border-t border-white/10">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-600">This week's progress</span>
+            <span className="text-muted">This week's progress</span>
             <div className="flex items-center space-x-4">
-              <span className="font-semibold text-indigo-600">
+              <span className="font-semibold text-primary">
                 {weeklyStats.filter((s) => (Number(s.value) || 0) > 0).length}/7 days logged
               </span>
               <div className="flex items-center space-x-1 text-orange-600">

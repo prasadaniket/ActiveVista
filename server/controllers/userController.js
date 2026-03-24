@@ -162,18 +162,8 @@ export const getUserDashboard = async (req, res, next) => {
       currentDateFormatted.getDate() + 1
     );
 
-    // Calculate total calories burnt from ALL workouts (including history from both collections and plan workouts)
-    const [currentWorkoutsCalories, historyWorkoutsCalories, planWorkoutsCalories] = await Promise.all([
-      // Current workouts
-      Workout.aggregate([
-        { $match: { user: user._id } },
-        {
-          $group: {
-            _id: null,
-            totalCaloriesBurnt: { $sum: "$caloriesBurned" },
-          },
-        },
-      ]),
+    // Calculate total calories burnt from COMPLETED workouts
+    const [historyWorkoutsCalories] = await Promise.all([
       // Historical workouts
       WorkoutHistory.aggregate([
         { $match: { user: user._id } },
@@ -183,44 +173,23 @@ export const getUserDashboard = async (req, res, next) => {
             totalCaloriesBurnt: { $sum: "$caloriesBurned" },
           },
         },
-      ]),
-      // Plan workouts (from active plan)
-      UserPlan.aggregate([
-        { $match: { user: user._id, status: 'active' } },
-        { $unwind: "$dayMapping" },
-        { $match: { "dayMapping.completed": true } },
-        {
-          $group: {
-            _id: null,
-            totalCaloriesBurnt: { $sum: "$dayMapping.caloriesBurned" },
-          },
-        },
       ])
     ]);
 
-    const totalCaloriesBurnt = [
-      ...(currentWorkoutsCalories.length > 0 ? currentWorkoutsCalories : [{ totalCaloriesBurnt: 0 }]),
-      ...(historyWorkoutsCalories.length > 0 ? historyWorkoutsCalories : [{ totalCaloriesBurnt: 0 }]),
-      ...(planWorkoutsCalories.length > 0 ? planWorkoutsCalories : [{ totalCaloriesBurnt: 0 }])
+    const totalCaloriesBurntArr = [
+      ...(historyWorkoutsCalories.length > 0 ? historyWorkoutsCalories : [{ totalCaloriesBurnt: 0 }])
     ];
 
-    // Calculate total no of workouts from ALL workouts (including history from both collections and plan workouts)
-    const [currentWorkoutsCount, historyWorkoutsCount, planWorkoutsCount] = await Promise.all([
-      Workout.countDocuments({ user: userId }),
-      WorkoutHistory.countDocuments({ user: userId }),
-      UserPlan.aggregate([
-        { $match: { user: user._id, status: 'active' } },
-        { $unwind: "$dayMapping" },
-        { $match: { "dayMapping.completed": true } },
-        { $count: "total" }
-      ])
+    // Calculate total no of workouts from COMPLETED workouts
+    const [historyWorkoutsCount] = await Promise.all([
+      WorkoutHistory.countDocuments({ user: userId })
     ]);
 
-    const totalWorkouts = currentWorkoutsCount + historyWorkoutsCount + (planWorkoutsCount.length > 0 ? planWorkoutsCount[0].total : 0);
+    const totalWorkouts = historyWorkoutsCount;
 
-    // Calculate today's calories burnt (for today's specific data)
-    const todaysCaloriesBurnt = await Workout.aggregate([
-      { $match: { user: user._id, date: { $gte: startToday, $lt: endToday } } },
+    // Calculate today's calories burnt (for today's specific data - completed only)
+    const todaysCaloriesBurnt = await WorkoutHistory.aggregate([
+      { $match: { user: user._id, completedAt: { $gte: startToday, $lt: endToday } } },
       {
         $group: {
           _id: null,
@@ -235,27 +204,15 @@ export const getUserDashboard = async (req, res, next) => {
       date: { $gte: startToday, $lt: endToday },
     });
 
-    // Calculate total calories from both collections
-    const totalCaloriesFromCurrent = currentWorkoutsCalories.length > 0 ? currentWorkoutsCalories[0].totalCaloriesBurnt : 0;
-    const totalCaloriesFromHistory = historyWorkoutsCalories.length > 0 ? historyWorkoutsCalories[0].totalCaloriesBurnt : 0;
-    const totalCaloriesCombined = totalCaloriesFromCurrent + totalCaloriesFromHistory;
+    // Calculate total calories
+    const totalCaloriesCombined = totalCaloriesBurntArr.reduce((sum, item) => sum + item.totalCaloriesBurnt, 0);
 
     // Calculate average calories burnt per workout
     const avgCaloriesBurntPerWorkout =
       totalWorkouts > 0 ? totalCaloriesCombined / totalWorkouts : 0;
 
-    // Fetch category of workouts from ALL workouts (including history from both collections and plan workouts)
-    const [currentCategoryCalories, historyCategoryCalories, planCategoryCalories] = await Promise.all([
-      // Current workouts categories
-      Workout.aggregate([
-        { $match: { user: user._id } },
-        {
-          $group: {
-            _id: "$category",
-            totalCaloriesBurnt: { $sum: "$caloriesBurned" },
-          },
-        },
-      ]),
+    // Fetch category of workouts from COMPLETED workouts
+    const [historyCategoryCalories] = await Promise.all([
       // Historical workouts categories
       WorkoutHistory.aggregate([
         { $match: { user: user._id } },
@@ -265,36 +222,13 @@ export const getUserDashboard = async (req, res, next) => {
             totalCaloriesBurnt: { $sum: "$caloriesBurned" },
           },
         },
-      ]),
-      // Plan workouts categories
-      UserPlan.aggregate([
-        { $match: { user: user._id, status: 'active' } },
-        { $unwind: "$dayMapping" },
-        { $match: { "dayMapping.completed": true } },
-        {
-          $group: {
-            _id: "$dayMapping.category",
-            totalCaloriesBurnt: { $sum: "$dayMapping.caloriesBurned" },
-          },
-        },
       ])
     ]);
 
-    // Combine category data from both collections
     const combinedCategoryMap = new Map();
-    
-    // Add current workout categories
-    currentCategoryCalories.forEach(cat => {
-      combinedCategoryMap.set(cat._id, (combinedCategoryMap.get(cat._id) || 0) + cat.totalCaloriesBurnt);
-    });
     
     // Add historical workout categories
     historyCategoryCalories.forEach(cat => {
-      combinedCategoryMap.set(cat._id, (combinedCategoryMap.get(cat._id) || 0) + cat.totalCaloriesBurnt);
-    });
-    
-    // Add plan workout categories
-    planCategoryCalories.forEach(cat => {
       combinedCategoryMap.set(cat._id, (combinedCategoryMap.get(cat._id) || 0) + cat.totalCaloriesBurnt);
     });
 
@@ -331,21 +265,21 @@ export const getUserDashboard = async (req, res, next) => {
         date.getDate() + 1
       );
 
-      const weekData = await Workout.aggregate([
+      const weekData = await WorkoutHistory.aggregate([
         {
           $match: {
             user: user._id,
-            date: { $gte: startOfDay, $lt: endOfDay },
+            completedAt: { $gte: startOfDay, $lt: endOfDay },
           },
         },
         {
           $group: {
-            _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+            _id: { $dateToString: { format: "%Y-%m-%d", date: "$completedAt" } },
             totalCaloriesBurnt: { $sum: "$caloriesBurned" },
           },
         },
         {
-          $sort: { _id: 1 }, // Sort by date in ascending order
+          $sort: { _id: 1 }, 
         },
       ]);
 
@@ -1135,23 +1069,13 @@ export const getAllHistoricalWorkouts = async (req, res, next) => {
   try {
     const userId = req.user?.id;
     
-    // Get all workouts (both current and completed/historical)
-    const allWorkouts = await Workout.find({ user: userId })
-      .sort({ date: -1 })
-      .lean();
-
-    // Get all workout history
+    // Get all workout history (only completed workouts)
     const allWorkoutHistory = await WorkoutHistory.find({ user: userId })
       .sort({ completedAt: -1 })
       .lean();
 
     // Combine and format the data
     const combinedWorkouts = [
-      ...allWorkouts.map(workout => ({
-        ...workout,
-        type: 'current',
-        completedAt: workout.date
-      })),
       ...allWorkoutHistory.map(workout => ({
         ...workout,
         type: 'completed',
@@ -1662,6 +1586,20 @@ export const completePlanWorkout = async (req, res, next) => {
     }
 
     await activePlan.save();
+    
+    // Also save this completed workout to WorkoutHistory so it appears in logs
+    const historyDoc = new WorkoutHistory({
+      user: userId,
+      workoutPlan: activePlan._id,
+      workoutName: planDay.workoutName || `Day ${dayNumber} Workout`,
+      category: planDay.category || "plan_workout",
+      exercises: planDay.exercises || [],
+      totalDuration: planDay.totalDuration || 30,
+      caloriesBurned: planDay.caloriesBurned || 200,
+      completedAt: planDay.completedAt || new Date(),
+      notes: `Completed part of plan: ${activePlan.planName}`,
+    });
+    await historyDoc.save();
 
     res.status(200).json({
       success: true,

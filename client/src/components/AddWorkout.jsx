@@ -89,20 +89,20 @@ const AddWorkout = ({ workout, setWorkout, addNewWorkout, buttonLoading }) => {
   ];
 
   return (
-    <Card className="bg-white shadow-modern border-0 card-hover">
+    <Card className="glass-panel border-0 card-hover">
       <CardHeader className="pb-4">
-        <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
-          <div className="gradient-primary p-2 rounded-xl mr-3">
+        <CardTitle className="text-xl font-bold text-text flex items-center">
+          <div className="gradient-primary shadow-[0_0_10px_var(--color-primary)] p-2 rounded-xl mr-3">
             <Plus className="h-5 w-5 text-white" />
           </div>
           Add New Workout
         </CardTitle>
-        <p className="text-sm text-gray-600 mt-2">Log your workout details and track your progress</p>
+        <p className="text-sm text-muted mt-2">Log your workout details and track your progress</p>
       </CardHeader>
       <CardContent className="space-y-6">
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <Label htmlFor="workout" className="text-sm font-semibold text-gray-700">
+            <Label htmlFor="workout" className="text-sm font-semibold text-text">
               Workout Details
             </Label>
             {workout.trim() && (
@@ -136,12 +136,12 @@ Example:
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               ref={textareaRef}
-              className={`min-h-[140px] resize-none transition-all duration-200 ${
-                isFocused ? 'ring-2 ring-indigo-500 border-indigo-300' : ''
+              className={`min-h-[140px] resize-none transition-all duration-200 input-dark ${
+                isFocused ? 'ring-2 ring-primary border-primary/50' : ''
               }`}
             />
             {isFocused && (
-              <div className="absolute -top-2 right-2 bg-indigo-100 text-indigo-600 px-2 py-1 rounded-full text-xs font-medium">
+              <div className="absolute -top-2 right-2 bg-primary/20 border border-primary/30 text-primary px-2 py-1 rounded-full text-xs font-medium">
                 <Zap className="h-3 w-3 inline mr-1" />
                 Live
               </div>
@@ -153,8 +153,8 @@ Example:
         {!workout.trim() && (
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <Label className="text-sm font-semibold text-gray-700">Quick Examples</Label>
-              <span className="text-xs text-gray-500">Templates only — disappear once you start typing</span>
+              <Label className="text-sm font-semibold text-text">Quick Examples</Label>
+              <span className="text-xs text-muted">Templates only — disappear once you start typing</span>
             </div>
             <div className="grid grid-cols-1 gap-2">
               {exampleWorkouts.map((example, index) => (
@@ -164,17 +164,17 @@ Example:
                     setWorkout(example.content);
                     setTimeout(() => textareaRef.current?.focus(), 0);
                   }}
-                  className="text-left p-3 rounded-lg border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all duration-200 group"
+                  className="text-left p-3 rounded-lg border border-white/10 hover:border-primary/50 hover:bg-primary/10 transition-all duration-200 group"
                   aria-label={`Use template: ${example.title}`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-2">
-                      <example.icon className="h-5 w-5 text-indigo-600" />
-                      <span className="text-sm font-medium text-gray-700 group-hover:text-indigo-600">
+                      <example.icon className="h-5 w-5 text-primary" />
+                      <span className="text-sm font-medium text-muted group-hover:text-text">
                         {example.title}
                       </span>
                     </div>
-                    <div className="flex items-center space-x-1 text-xs text-gray-500 group-hover:text-indigo-600">
+                    <div className="flex items-center space-x-1 text-xs text-muted/70 group-hover:text-primary">
                       <Flame className="h-3 w-3" />
                       <span>{example.calories}</span>
                     </div>
@@ -204,24 +204,24 @@ Example:
         </Button>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-4 pt-4 border-t border-gray-100">
+        <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/10">
           <div className="text-center">
             <div className="flex items-center justify-center mb-1">
-              <Clock className="h-4 w-4 text-indigo-600" />
+              <Clock className="h-4 w-4 text-primary" />
             </div>
-            <div className="text-xs text-gray-600">Time</div>
+            <div className="text-xs text-muted">Time</div>
           </div>
           <div className="text-center">
             <div className="flex items-center justify-center mb-1">
-              <Target className="h-4 w-4 text-green-600" />
+              <Target className="h-4 w-4 text-emerald-500" />
             </div>
-            <div className="text-xs text-gray-600">Goals</div>
+            <div className="text-xs text-muted">Goals</div>
           </div>
           <div className="text-center">
             <div className="flex items-center justify-center mb-1">
-              <Zap className="h-4 w-4 text-orange-600" />
+              <Zap className="h-4 w-4 text-amber-500" />
             </div>
-            <div className="text-xs text-gray-600">Progress</div>
+            <div className="text-xs text-muted">Progress</div>
           </div>
         </div>
       </CardContent>

@@ -14,6 +14,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
 import { Clock, Dumbbell, Target, Calendar, Zap, Heart, Activity, Trash2, BicepsFlexed, Bed } from "lucide-react";
 import axiosInstance from "../../api/axiosInstance";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "../../api/queries";
+import { useToast } from "../ui/Toast";
 
 const WorkoutCard = ({ workout, onDelete, showDelete = false }) => {
   if (!workout) return null;
@@ -47,30 +50,42 @@ const WorkoutCard = ({ workout, onDelete, showDelete = false }) => {
     workout.completed || workout.status === 'completed' || workout.completedAt
   );
 
-  const completeWorkout = async () => {
-    try {
-      if (!workout._id) return;
-      await axiosInstance.post(`/user/workout/${workout._id}/complete`);
+  const queryClient = useQueryClient();
+  const { addToast } = useToast();
+
+  const { mutate: completeWorkout, isPending: completing } = useMutation({
+    mutationFn: async () => {
+      if (!workout._id) throw new Error("Invalid workout ID");
+      return await axiosInstance.post(`/user/workout/${workout._id}/complete`);
+    },
+    onSuccess: () => {
       window.dispatchEvent(new CustomEvent('workout:completed'));
-      alert('Workout completed!');
-    } catch (e) {
+      addToast({ type: "success", title: "Success", message: "Workout completed!" });
+      queryClient.invalidateQueries({ queryKey: queryKeys.todaysWorkouts("") });
+      queryClient.invalidateQueries({ queryKey: queryKeys.workoutHistory("") });
+      queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile });
+    },
+    onError: (e) => {
       console.error('Failed to complete workout', e);
       if (e?.response) {
         const status = e.response.status;
         if (status === 404) {
-          alert('Workout not found. Please refresh the page.');
+          addToast({ type: "error", title: "Not Found", message: "Workout not found. It may have already been completed." });
+          // Force a refetch anyway to sync UI and remove the ghost workout
+          queryClient.invalidateQueries({ queryKey: queryKeys.todaysWorkouts("") });
         } else if (status >= 500) {
-          alert('Server error. Please try again later.');
+          addToast({ type: "error", title: "Server Error", message: "Server error. Please try again later." });
         } else {
-          alert(e.response.data?.message || 'Unexpected error while completing workout.');
+          addToast({ type: "error", title: "Error", message: e.response.data?.message || 'Unexpected error while completing workout.' });
         }
       } else if (e?.request) {
-        alert('Could not connect to server. Please ensure backend is running.');
+        addToast({ type: "error", title: "Network Error", message: "Could not connect to server. Please ensure backend is running." });
       } else {
-        alert(`Error: ${e.message}`);
+        addToast({ type: "error", title: "Error", message: e.message });
       }
     }
-  };
+  });
   
   // Get workout type color
   const getWorkoutTypeColor = (title) => {
@@ -93,8 +108,8 @@ const WorkoutCard = ({ workout, onDelete, showDelete = false }) => {
   };
   
   return (
-    <Card className="group bg-white shadow-modern border-0 card-hover overflow-hidden">
-      <div className={`h-1 ${getWorkoutTypeColor(title)}`}></div>
+    <Card className="group glass-panel border-0 card-hover overflow-hidden">
+      <div className={`h-1 ${getWorkoutTypeColor(title)} shadow-[0_0_10px_currentColor]`}></div>
       
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
@@ -103,11 +118,11 @@ const WorkoutCard = ({ workout, onDelete, showDelete = false }) => {
               {React.createElement(getWorkoutIcon(title), { className: "h-5 w-5" })}
             </div>
             <div>
-              <CardTitle className="text-lg font-bold text-gray-900 group-hover:text-indigo-600 transition-colors">
+              <CardTitle className="text-lg font-bold text-text group-hover:text-primary transition-colors">
                 {title}
               </CardTitle>
-              <div className="flex items-center text-sm text-gray-500 mt-1">
-                <Calendar className="h-4 w-4 mr-1" />
+              <div className="flex items-center text-sm text-muted mt-1">
+                <Calendar className="h-4 w-4 mr-1 text-primary/70" />
                 {new Date(workout.date || workout.createdAt).toLocaleDateString()}
               </div>
             </div>
@@ -121,7 +136,7 @@ const WorkoutCard = ({ workout, onDelete, showDelete = false }) => {
                 variant="ghost"
                 size="sm"
                 onClick={() => onDelete(workout._id)}
-                className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1"
+                className="text-red-500 hover:text-red-400 hover:bg-red-500/10 p-1"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
@@ -134,41 +149,41 @@ const WorkoutCard = ({ workout, onDelete, showDelete = false }) => {
         <div className="space-y-3">
           {exercises.length > 0 ? (
             exercises.map((exercise, index) => (
-              <div key={index} className="flex items-center text-sm text-gray-700 bg-gray-50 rounded-lg p-2 group-hover:bg-indigo-50 transition-colors">
-                <div className="w-2 h-2 bg-indigo-500 rounded-full mr-3 flex-shrink-0"></div>
+              <div key={index} className="flex items-center text-sm text-muted bg-white/5 rounded-lg p-2 group-hover:bg-primary/10 transition-colors">
+                <div className="w-2 h-2 gradient-primary rounded-full mr-3 flex-shrink-0"></div>
                 <span className="truncate">{exercise}</span>
               </div>
             ))
           ) : (
             <div className="text-center py-4">
-              <Zap className="h-8 w-8 text-gray-300 mx-auto mb-2" />
-              <p className="text-sm text-gray-500">No exercises recorded</p>
+              <Zap className="h-8 w-8 text-muted/30 mx-auto mb-2" />
+              <p className="text-sm text-muted">No exercises recorded</p>
             </div>
           )}
         </div>
         
         {/* Workout Stats */}
-        <div className="mt-4 pt-4 border-t border-gray-100">
-          <div className="flex items-center justify-between text-xs text-gray-500">
+        <div className="mt-4 pt-4 border-t border-white/10">
+          <div className="flex items-center justify-between text-xs text-muted">
             <div className="flex items-center">
-              <Clock className="h-3 w-3 mr-1" />
+              <Clock className="h-3 w-3 mr-1 text-primary/70" />
               <span>
                 {new Date(workout.date || workout.createdAt || Date.now()).toLocaleString()}
               </span>
             </div>
             <div className="flex items-center">
-              <Target className="h-3 w-3 mr-1" />
+              <Target className="h-3 w-3 mr-1 text-primary/70" />
               <span>{isCompleted ? 'Successful' : 'In Process'}</span>
             </div>
           </div>
           <div className="mt-3 flex justify-end">
             {isCompleted ? (
-              <Button size="sm" className="bg-green-600 text-white px-3" disabled>
+              <Button size="sm" className="bg-emerald-600/20 text-emerald-400 hover:bg-emerald-600/30 px-3 border border-emerald-500/20" disabled>
                 Task Completed
               </Button>
             ) : (
-              <Button size="sm" className="gradient-primary text-white px-3" onClick={completeWorkout}>
-                Mark as Completed
+              <Button size="sm" className="btn-futuristic text-white px-3" onClick={() => completeWorkout()} disabled={completing}>
+                {completing ? "Completing..." : "Mark as Completed"}
               </Button>
             )}
           </div>

@@ -14,11 +14,11 @@ const UserSchema = new mongoose.Schema(
     gender: {
       type: String,
       enum: ['male', 'female', 'other'],
-      required: true,
+      default: null,
     },
     pronouns: {
       type: String,
-      required: true,
+      default: null,
     },
     img: {
       type: String,
@@ -30,33 +30,33 @@ const UserSchema = new mongoose.Schema(
     },
     age: {
       type: Number,
-      required: true,
+      default: null,
     },
     // Profile fields
     weight: {
       type: Number,
       min: 0,
-      required: true,
+      default: null,
     },
     height: {
       type: Number,
       min: 0,
-      required: true,
+      default: null,
     },
     bodyType: {
       type: String,
       enum: ['fit', 'slim', 'muscular', 'curvy', 'athletic'],
-      required: true,
+      default: null,
     },
     fitnessLevel: {
       type: String,
       enum: ['beginner', 'intermediate', 'advanced', 'expert'],
-      required: true,
+      default: null,
     },
     workoutExperience: {
       type: String,
       enum: ['new', 'some_experience', 'experienced', 'expert'],
-      required: true,
+      default: null,
     },
     goals: [{
       type: String,

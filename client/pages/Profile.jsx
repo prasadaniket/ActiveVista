@@ -1,15 +1,3 @@
-/*
-  Profile.jsx
-  Purpose: User profile settings and snapshots (daily steps, active plan, recent workouts).
-  Data Flow:
-    - GET /user/profile, /user/workout, /user/steps?date=YYYY-MM-DD, /user/active-plan
-    - PUT /user/profile, /user/change-password
-    - Listens for steps:saved, plan:activated, workout:completed to refresh sections.
-  UI Structure:
-    - Left: profile basics, security, active plan
-    - Middle: fitness star, basic info form, my workouts
-    - Right: daily steps, fitness info, workout preferences
-*/
 import React, { useState, useEffect } from "react";
 import {
   Card,
@@ -40,51 +28,123 @@ import {
   CheckCircle,
 } from "lucide-react";
 import axiosInstance from "../src/api/axiosInstance";
+import { useToast } from "../src/components/ui/Toast";
+import PageTransition from "../src/components/PageTransition";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import {
+  useProfile,
+  useTodaysWorkouts,
+  useDailySteps,
+  useActivePlan,
+  queryKeys,
+} from "../src/api/queries";
+
+const profileSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email(),
+  gender: z.string().optional(),
+  pronouns: z.string().optional(),
+  age: z.coerce.number().optional().nullable(),
+  weight: z.coerce.number().optional().nullable(),
+  height: z.coerce.number().optional().nullable(),
+  bodyType: z.string().optional(),
+  fitnessLevel: z.string().optional(),
+  workoutExperience: z.string().optional(),
+  goals: z.array(z.string()).optional(),
+  preferences: z.object({
+    workoutDuration: z.coerce.number().optional().nullable(),
+    workoutDays: z.coerce.number().optional().nullable(),
+    equipment: z.array(z.string()).optional()
+  }).optional()
+});
+
+const genderOptions = [
+  { value: "", label: "Please select" },
+  { value: "male", label: "Male" },
+  { value: "female", label: "Female" },
+  { value: "other", label: "Other" },
+];
+
+const pronounOptions = [
+  { value: "", label: "Please select" },
+  { value: "he/him", label: "He/Him" },
+  { value: "she/her", label: "She/Her" },
+  { value: "they/them", label: "They/Them" },
+  { value: "ze/zir", label: "Ze/Zir" },
+  { value: "other", label: "Other" },
+];
+
+const bodyTypes = [
+  { value: "fit", label: "Fit" },
+  { value: "slim", label: "Slim" },
+  { value: "muscular", label: "Muscular" },
+  { value: "curvy", label: "Curvy" },
+  { value: "athletic", label: "Athletic" },
+];
+
+const fitnessLevels = [
+  { value: "beginner", label: "Beginner" },
+  { value: "intermediate", label: "Intermediate" },
+  { value: "advanced", label: "Advanced" },
+  { value: "expert", label: "Expert" },
+];
+
+const workoutExperiences = [
+  { value: "new", label: "New to working out" },
+  { value: "some_experience", label: "Some experience" },
+  { value: "experienced", label: "Experienced" },
+  { value: "expert", label: "Expert" },
+];
+
+const goalOptions = [
+  { value: "weight_loss", label: "Weight Loss" },
+  { value: "muscle_gain", label: "Muscle Gain" },
+  { value: "endurance", label: "Endurance" },
+  { value: "strength", label: "Strength" },
+  { value: "flexibility", label: "Flexibility" },
+  { value: "general_fitness", label: "General Fitness" },
+];
+
+const equipmentOptions = [
+  { value: "bodyweight", label: "Bodyweight" },
+  { value: "dumbbells", label: "Dumbbells" },
+  { value: "barbell", label: "Barbell" },
+  { value: "kettlebell", label: "Kettlebell" },
+  { value: "resistance_bands", label: "Resistance Bands" },
+  { value: "cardio_machine", label: "Cardio Machine" },
+  { value: "gym_equipment", label: "Gym Equipment" },
+];
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { addToast } = useToast();
+  const queryClient = useQueryClient();
+
   const [editing, setEditing] = useState(false);
-  const [saving, setSaving] = useState(false);
-  const [todaysWorkouts, setTodaysWorkouts] = useState([]);
-  const [dailySteps, setDailySteps] = useState(0);
-  const [stepsLoading, setStepsLoading] = useState(false);
-  const [activePlan, setActivePlan] = useState(null);
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
-  const [showPasswordForm, setShowPasswordForm] = useState(false);
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    gender: "",
-    pronouns: "",
-    age: "",
-    weight: "",
-    height: "",
-    bodyType: "",
-    fitnessLevel: "",
-    workoutExperience: "",
-    goals: [],
-    preferences: {
-      workoutDuration: 30,
-      workoutDays: 3,
-      equipment: [],
-    },
-  });
+  const { data: userProfile, isLoading: profileLoading } = useProfile();
+  const { data: todaysWorkoutsRaw } = useTodaysWorkouts("");
+  const { data: dailyStepsRaw, isLoading: stepsLoading } = useDailySteps();
+  const { data: activePlan } = useActivePlan();
+
+  const todaysWorkouts = Array.isArray(todaysWorkoutsRaw) ? todaysWorkoutsRaw : [];
+  const dailySteps = dailyStepsRaw || 0;
 
   useEffect(() => {
-    fetchUserProfile();
-    fetchTodaysWorkouts();
-    fetchDailySteps();
-    fetchActivePlan();
-
-    const handleStepsSaved = () => fetchDailySteps();
-    const handlePlanActivated = () => fetchActivePlan();
-    const handleWorkoutCompleted = () => fetchTodaysWorkouts();
+    const handleStepsSaved = () => queryClient.invalidateQueries({ queryKey: queryKeys.dailySteps() });
+    const handlePlanActivated = () => queryClient.invalidateQueries({ queryKey: queryKeys.activePlan });
+    const handleWorkoutCompleted = () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.todaysWorkouts("") });
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile });
+    };
 
     window.addEventListener('steps:saved', handleStepsSaved);
     window.addEventListener('plan:activated', handlePlanActivated);
@@ -94,247 +154,146 @@ const Profile = () => {
       window.removeEventListener('plan:activated', handlePlanActivated);
       window.removeEventListener('workout:completed', handleWorkoutCompleted);
     };
-  }, []);
+  }, [queryClient]);
 
-  const fetchUserProfile = async () => {
-    try {
-      const response = await axiosInstance.get("/user/profile");
-      const userData = response.data.user;
-      console.log("Fetched user data:", userData);
-      setUser(userData);
-      setFormData({
-        name: userData.name || "",
-        email: userData.email || "",
-        gender: userData.gender || "",
-        pronouns: userData.pronouns || "",
-        age: userData.age || "",
-        weight: userData.weight || "",
-        height: userData.height || "",
-        bodyType: userData.bodyType || "",
-        fitnessLevel: userData.fitnessLevel || "beginner",
-        workoutExperience: userData.workoutExperience || "new",
-        goals: userData.goals || [],
-        preferences: {
-          workoutDuration: userData.preferences?.workoutDuration || 30,
-          workoutDays: userData.preferences?.workoutDays || 3,
-          equipment: userData.preferences?.equipment || [],
-        },
-      });
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchTodaysWorkouts = async () => {
-    try {
-      const res = await axiosInstance.get("/user/workout");
-      setTodaysWorkouts(
-        Array.isArray(res?.data?.todaysWorkouts) ? res.data.todaysWorkouts : []
-      );
-    } catch (error) {
-      console.error("Error fetching profile workouts:", error);
-      setTodaysWorkouts([]);
-    }
-  };
-
-  const fetchDailySteps = async () => {
-    try {
-      setStepsLoading(true);
-      const d = new Date();
-      const yyyy = d.getFullYear();
-      const mm = String(d.getMonth() + 1).padStart(2, '0');
-      const dd = String(d.getDate()).padStart(2, '0');
-      const dateStr = `${yyyy}-${mm}-${dd}`;
-      const res = await axiosInstance.get(`/user/steps?date=${dateStr}`);
-      setDailySteps(res?.data?.steps || 0);
-    } catch (error) {
-      console.error("Error fetching daily steps (profile):", error);
-      setDailySteps(0);
-    } finally {
-      setStepsLoading(false);
-    }
-  };
-
-  const fetchActivePlan = async () => {
-    try {
-      const res = await axiosInstance.get("/user/active-plan");
-      if (res.data?.success) {
-        setActivePlan(res.data.plan);
-      } else {
-        setActivePlan(null);
+  const {
+    setValue,
+    watch,
+    reset
+  } = useForm({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      gender: "",
+      pronouns: "",
+      age: null,
+      weight: null,
+      height: null,
+      bodyType: "",
+      fitnessLevel: "beginner",
+      workoutExperience: "new",
+      goals: [],
+      preferences: {
+        workoutDuration: 30,
+        workoutDays: 3,
+        equipment: []
       }
-    } catch (error) {
-      setActivePlan(null);
     }
-  };
+  });
+
+  useEffect(() => {
+    if (userProfile) {
+      reset({
+        name: userProfile.name || "",
+        email: userProfile.email || "",
+        gender: userProfile.gender || "",
+        pronouns: userProfile.pronouns || "",
+        age: userProfile.age || null,
+        weight: userProfile.weight || null,
+        height: userProfile.height || null,
+        bodyType: userProfile.bodyType || "",
+        fitnessLevel: userProfile.fitnessLevel || "beginner",
+        workoutExperience: userProfile.workoutExperience || "new",
+        goals: userProfile.goals || [],
+        preferences: {
+          workoutDuration: userProfile.preferences?.workoutDuration || 30,
+          workoutDays: userProfile.preferences?.workoutDays || 3,
+          equipment: userProfile.preferences?.equipment || [],
+        }
+      });
+    }
+  }, [userProfile, reset]);
+
+  const formData = watch();
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    console.log("Input change:", { name, value, type, checked });
-    
-    // Email is non-editable – ignore any attempted changes programmatically
-    if (name === "email") {
-      return;
-    }
+    if (name === "email") return;
 
     if (name.startsWith("preferences.")) {
       const prefKey = name.split(".")[1];
-      setFormData((prev) => ({
-        ...prev,
-        preferences: {
-          ...prev.preferences,
-          [prefKey]:
-            type === "checkbox"
-              ? checked
-                ? [...prev.preferences[prefKey], value]
-                : prev.preferences[prefKey].filter((item) => item !== value)
-              : value,
-        },
-      }));
+      const currentPrefs = formData.preferences?.[prefKey];
+      
+      let newValue;
+      if (type === "checkbox") {
+        newValue = checked 
+          ? [...(currentPrefs || []), value]
+          : (currentPrefs || []).filter(item => item !== value);
+      } else {
+        newValue = value;
+      }
+      setValue(`preferences.${prefKey}`, newValue, { shouldDirty: true });
     } else if (name === "goals") {
-      setFormData((prev) => ({
-        ...prev,
-        goals: checked
-          ? [...prev.goals, value]
-          : prev.goals.filter((goal) => goal !== value),
-      }));
+      const currentGoals = formData.goals || [];
+      const newValue = checked 
+        ? [...currentGoals, value]
+        : currentGoals.filter(goal => goal !== value);
+      setValue("goals", newValue, { shouldDirty: true });
     } else {
-      setFormData((prev) => {
-        const newData = {
-          ...prev,
-          [name]: type === "checkbox" ? checked : value,
-        };
-        console.log("Updated form data:", newData);
-        return newData;
-      });
+      setValue(name, type === "checkbox" ? checked : value, { shouldDirty: true });
     }
   };
 
-  const handleSave = async () => {
-    setSaving(true);
-    try {
-      console.log("Saving profile data:", formData);
-      const response = await axiosInstance.put("/user/profile", formData);
-      console.log("Profile update response:", response.data);
-      await fetchUserProfile();
+  const { mutate: handleSave, isPending: saving } = useMutation({
+    mutationFn: async () => {
+      return await axiosInstance.put("/user/profile", formData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile });
       setEditing(false);
-      alert("Profile updated successfully!");
-    } catch (error) {
-      console.error("Error updating profile:", error);
-      console.error("Error details:", {
-        status: error.response?.status,
-        message: error.response?.data?.message,
-        data: error.response?.data
-      });
-      alert("Failed to update profile. Please try again.");
-    } finally {
-      setSaving(false);
+      addToast({ type: "success", title: "Saved", message: "Profile updated successfully!" });
+    },
+    onError: () => {
+      addToast({ type: "error", title: "Update Failed", message: "Failed to update profile. Please try again." });
     }
-  };
+  });
 
-  const handlePasswordChange = async () => {
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      alert("New passwords don't match!");
-      return;
-    }
-
-    try {
-      await axiosInstance.put("/user/change-password", {
+  const { mutate: handlePasswordChange } = useMutation({
+    mutationFn: async () => {
+      if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+         throw new Error("Mismatch");
+      }
+      return await axiosInstance.put("/user/change-password", {
         currentPassword: passwordForm.currentPassword,
         newPassword: passwordForm.newPassword,
       });
-      alert("Password changed successfully!");
-      setPasswordForm({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      });
+    },
+    onSuccess: () => {
+      addToast({ type: "success", title: "Changed", message: "Password changed successfully!" });
+      setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
       setShowPasswordForm(false);
-    } catch (error) {
-      console.error("Error changing password:", error);
-      alert("Failed to change password. Please check your current password.");
+    },
+    onError: (error) => {
+      if(error.message === "Mismatch") {
+         addToast({ type: "warning", title: "Mismatch", message: "New passwords don't match!" });
+      } else {
+         addToast({ type: "error", title: "Failed", message: "Failed to change password. Please check your current password." });
+      }
     }
-  };
+  });
 
-  const genderOptions = [
-    { value: "", label: "Please select" },
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-    { value: "other", label: "Other" },
-  ];
-
-  const pronounOptions = [
-    { value: "", label: "Please select" },
-    { value: "he/him", label: "He/Him" },
-    { value: "she/her", label: "She/Her" },
-    { value: "they/them", label: "They/Them" },
-    { value: "ze/zir", label: "Ze/Zir" },
-    { value: "other", label: "Other" },
-  ];
-
-  const bodyTypes = [
-    { value: "fit", label: "Fit" },
-    { value: "slim", label: "Slim" },
-    { value: "muscular", label: "Muscular" },
-    { value: "curvy", label: "Curvy" },
-    { value: "athletic", label: "Athletic" },
-  ];
-
-  const fitnessLevels = [
-    { value: "beginner", label: "Beginner" },
-    { value: "intermediate", label: "Intermediate" },
-    { value: "advanced", label: "Advanced" },
-    { value: "expert", label: "Expert" },
-  ];
-
-  const workoutExperiences = [
-    { value: "new", label: "New to working out" },
-    { value: "some_experience", label: "Some experience" },
-    { value: "experienced", label: "Experienced" },
-    { value: "expert", label: "Expert" },
-  ];
-
-  const goalOptions = [
-    { value: "weight_loss", label: "Weight Loss" },
-    { value: "muscle_gain", label: "Muscle Gain" },
-    { value: "endurance", label: "Endurance" },
-    { value: "strength", label: "Strength" },
-    { value: "flexibility", label: "Flexibility" },
-    { value: "general_fitness", label: "General Fitness" },
-  ];
-
-  const equipmentOptions = [
-    { value: "bodyweight", label: "Bodyweight" },
-    { value: "dumbbells", label: "Dumbbells" },
-    { value: "barbell", label: "Barbell" },
-    { value: "kettlebell", label: "Kettlebell" },
-    { value: "resistance_bands", label: "Resistance Bands" },
-    { value: "cardio_machine", label: "Cardio Machine" },
-    { value: "gym_equipment", label: "Gym Equipment" },
-  ];
-
-  if (loading) {
+  if (profileLoading) {
     return (
       <div className="flex-1 h-full flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading profile...</p>
+          <p className="text-muted">Loading profile...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 h-full bg-gradient-to-br from-slate-50 to-blue-50 overflow-y-auto">
+    <PageTransition>
+    <div className="flex-1 h-full bg-void overflow-y-auto">
       <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
+          <h1 className="text-3xl md:text-4xl font-bold text-text">
             Profile
           </h1>
-          <p className="text-gray-600 mt-1">
+          <p className="text-muted mt-1">
             Here is your daily activities & reports
           </p>
         </div>
@@ -343,65 +302,65 @@ const Profile = () => {
         <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
           {/* Left Column: Profile card */}
           <div className="xl:col-span-3 space-y-6">
-            <Card className="bg-white shadow-modern border-0">
+            <Card className="glass-panel border-0">
               <CardHeader className="pb-2">
-                <CardTitle className="text-lg font-bold text-gray-900">
+                <CardTitle className="text-lg font-bold text-text">
                   {"Your profile"}
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-4">
-                  <div className="h-14 w-14 rounded-full overflow-hidden bg-indigo-100 flex items-center justify-center text-indigo-700 font-semibold">
+                  <div className="h-14 w-14 rounded-full overflow-hidden bg-primary/10 flex items-center justify-center text-primary font-semibold">
                     {formData.name ? formData.name.charAt(0) : "U"}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       {formData.gender === 'female' && <Venus className="h-4 w-4 text-pink-500" />}
-                      {formData.gender === 'male' && <Mars className="h-4 w-4 text-blue-500" />}
+                      {formData.gender === 'male' && <Mars className="h-4 w-4 text-primary-light" />}
                       {formData.gender === 'other' && <VenusAndMars className="h-4 w-4 text-purple-500" />}
-                      <div className="text-sm font-medium text-gray-900">
+                      <div className="text-sm font-medium text-text">
                         {formData.name || "User"}
                       </div>
                       {formData.pronouns && (
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs text-muted/60">
                           ({formData.pronouns})
                         </div>
                       )}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-muted">
                       {formData.email || "user@example.com"}
                     </div>
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div>
-                    <div className="text-gray-500">Age</div>
-                    <div className="font-medium text-gray-900">
+                    <div className="text-muted">Age</div>
+                    <div className="font-medium text-text">
                       {formData.age || "—"}
                     </div>
                   </div>
                   <div>
-                    <div className="text-gray-500">Height</div>
-                    <div className="font-medium text-gray-900">
+                    <div className="text-muted">Height</div>
+                    <div className="font-medium text-text">
                       {formData.height ? `${formData.height} cm` : "—"}
                     </div>
                   </div>
                   <div>
-                    <div className="text-gray-500">Weight</div>
-                    <div className="font-medium text-gray-900">
+                    <div className="text-muted">Weight</div>
+                    <div className="font-medium text-text">
                       {formData.weight ? `${formData.weight} kg` : "—"}
                     </div>
                   </div>
                   <div>
-                    <div className="text-gray-500">Level</div>
-                    <div className="font-medium text-gray-900 capitalize">
+                    <div className="text-muted">Level</div>
+                    <div className="font-medium text-text capitalize">
                       {formData.fitnessLevel || "beginner"}
                     </div>
                   </div>
                 </div>
                 <Button
                   variant="outline"
-                  className="w-full border-indigo-600 text-indigo-600 hover:bg-indigo-50"
+                  className="w-full border-indigo-600 text-primary hover:bg-primary/10"
                 >
                   View Profile
                 </Button>
@@ -409,10 +368,10 @@ const Profile = () => {
             </Card>
 
             {/* Password Change */}
-            <Card className="bg-white shadow-modern border-0">
+            <Card className="glass-panel border-0">
               <CardHeader className="pb-4">
-                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
-                  <Lock className="h-5 w-5 mr-2 text-indigo-600" />
+                <CardTitle className="text-xl font-bold text-text flex items-center">
+                  <Lock className="h-5 w-5 mr-2 text-primary" />
                   Security
                 </CardTitle>
               </CardHeader>
@@ -475,7 +434,7 @@ const Profile = () => {
                       />
                     </div>
                     <div className="flex space-x-2">
-                      <Button onClick={handlePasswordChange} className="flex-1">
+                      <Button onClick={() => handlePasswordChange()} className="flex-1">
                         <Save className="h-4 w-4 mr-1" />
                         Change Password
                       </Button>
@@ -494,10 +453,10 @@ const Profile = () => {
 
             {/* Active Plan Snapshot (moved to left column) */}
             {activePlan && (
-              <Card className="bg-white shadow-modern border-0">
+              <Card className="glass-panel border-0">
                 <CardHeader className="pb-4">
-                  <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
-                    <Target className="h-5 w-5 mr-2 text-indigo-600" />
+                  <CardTitle className="text-xl font-bold text-text flex items-center">
+                    <Target className="h-5 w-5 mr-2 text-primary" />
                     Active Plan
                   </CardTitle>
                 </CardHeader>
@@ -519,7 +478,7 @@ const Profile = () => {
                       style={{ width: `${(activePlan.totalWorkoutsCompleted / 30) * 100}%` }}
                     />
                   </div>
-                  <div className="mt-2 text-xs text-gray-500 flex justify-between">
+                  <div className="mt-2 text-xs text-muted flex justify-between">
                     <span>Started {new Date(activePlan.startDate).toLocaleDateString()}</span>
                     <span>{30 - activePlan.totalWorkoutsCompleted} days left</span>
                   </div>
@@ -530,7 +489,7 @@ const Profile = () => {
 
           {/* Middle Column: Fitness star + account + forms */}
           <div className="xl:col-span-5 space-y-6">
-            <Card className="bg-white shadow-modern border-0 gradient-primary text-white">
+            <Card className="glass-panel border-0 gradient-primary text-white">
               <CardContent className="p-5">
                 <div className="text-lg font-semibold">Fitness Star</div>
                 <div className="text-sm opacity-90">
@@ -540,11 +499,11 @@ const Profile = () => {
             </Card>
 
             {/* Basic Information */}
-            <Card className="bg-white shadow-modern border-0">
+            <Card className="glass-panel border-0">
               <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
-                    <User className="h-5 w-5 mr-2 text-indigo-600" />
+                  <CardTitle className="text-xl font-bold text-text flex items-center">
+                    <User className="h-5 w-5 mr-2 text-primary" />
                     Basic Information
                   </CardTitle>
                   {!editing ? (
@@ -560,7 +519,7 @@ const Profile = () => {
                   ) : (
                     <div className="flex space-x-2">
                       <Button
-                        onClick={handleSave}
+                        onClick={() => handleSave()}
                         disabled={saving}
                         size="sm"
                         className="flex items-center"
@@ -595,7 +554,7 @@ const Profile = () => {
                       value={formData.gender}
                       onChange={handleInputChange}
                       disabled={!editing}
-                      className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-300 disabled:bg-gray-100"
+                      className="mt-1 w-full p-2 border border-white/10 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-300 disabled:bg-gray-100"
                     >
                       {genderOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -612,7 +571,7 @@ const Profile = () => {
                       value={formData.pronouns}
                       onChange={handleInputChange}
                       disabled={!editing}
-                      className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-300 disabled:bg-gray-100"
+                      className="mt-1 w-full p-2 border border-white/10 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-300 disabled:bg-gray-100"
                     >
                       {pronounOptions.map((option) => (
                         <option key={option.value} value={option.value}>
@@ -643,7 +602,7 @@ const Profile = () => {
                       disabled={true}
                       className="mt-1"
                     />
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-xs text-muted mt-1">
                       Email is fixed for account security.
                     </p>
                   </div>
@@ -691,7 +650,7 @@ const Profile = () => {
                       value={formData.bodyType}
                       onChange={handleInputChange}
                       disabled={!editing}
-                      className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-300 disabled:bg-gray-100"
+                      className="mt-1 w-full p-2 border border-white/10 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-300 disabled:bg-gray-100"
                     >
                       <option value="">Select body type</option>
                       {bodyTypes.map((type) => (
@@ -706,41 +665,40 @@ const Profile = () => {
             </Card>
 
             {/* My workouts (moved under Basic Information) */}
-            <Card className="bg-white shadow-modern border-0">
+            <Card className="glass-panel border-0">
               <CardHeader className="pb-4">
-                <CardTitle className="text-xl font-bold text-gray-900">
+                <CardTitle className="text-xl font-bold text-text">
                   My workouts
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {Array.isArray(todaysWorkouts) &&
-                  todaysWorkouts.length > 0 ? (
+                  {Array.isArray(todaysWorkouts) && todaysWorkouts.length > 0 ? (
                     todaysWorkouts.slice(0, 6).map((w, idx) => (
                       <div key={idx} className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-lg bg-indigo-50" />
+                        <div className="w-12 h-12 rounded-lg bg-primary/10" />
                         <div className="flex-1">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-medium text-text">
                             {(w.category || "Workout").toString()}
                           </div>
-                          <div className="text-xs text-gray-500">
+                          <div className="text-xs text-muted">
                             {new Date(
                               w.date || w.createdAt
                             ).toLocaleDateString()}
                           </div>
                         </div>
-                        <span className="w-2.5 h-2.5 rounded-full bg-indigo-600"></span>
+                        <span className="w-2.5 h-2.5 rounded-full bg-primary"></span>
                       </div>
                     ))
                   ) : (
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-muted">
                       No workouts yet. Start your first session today!
                     </div>
                   )}
                   <div className="text-right">
                     <Button
                       variant="ghost"
-                      className="text-indigo-600 hover:bg-indigo-50 px-2 py-1"
+                      className="text-primary hover:bg-primary/10 px-2 py-1"
                       onClick={() => (window.location.href = "/workouts")}
                     >
                       View All
@@ -754,23 +712,23 @@ const Profile = () => {
           {/* Right Column */}
           <div className="xl:col-span-4 space-y-6">
             {/* Daily Steps */}
-            <Card className="bg-white shadow-modern border-0">
+            <Card className="glass-panel border-0">
               <CardHeader className="pb-4">
-                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
+                <CardTitle className="text-xl font-bold text-text flex items-center">
                   <Footprints className="h-5 w-5 mr-2 text-green-600" />
                   Daily Steps
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
-                  <div className="text-3xl font-bold text-gray-900">
+                  <div className="text-3xl font-bold text-text">
                     {stepsLoading ? (
                       <div className="animate-pulse bg-gray-200 h-8 w-24 rounded" />
                     ) : (
                       dailySteps.toLocaleString()
                     )}
                   </div>
-                  <div className="text-sm text-gray-500">today</div>
+                  <div className="text-sm text-muted">today</div>
                 </div>
                 <div className="mt-3 w-full bg-gray-200 rounded-full h-2">
                   <div
@@ -783,10 +741,10 @@ const Profile = () => {
 
             {/* Active Plan Snapshot moved to left column */}
             {/* Fitness Information */}
-            <Card className="bg-white shadow-modern border-0">
+            <Card className="glass-panel border-0">
               <CardHeader className="pb-4">
-                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
-                  <Dumbbell className="h-5 w-5 mr-2 text-indigo-600" />
+                <CardTitle className="text-xl font-bold text-text flex items-center">
+                  <Dumbbell className="h-5 w-5 mr-2 text-primary" />
                   Fitness Information
                 </CardTitle>
               </CardHeader>
@@ -799,7 +757,7 @@ const Profile = () => {
                     value={formData.fitnessLevel}
                     onChange={handleInputChange}
                     disabled={!editing}
-                    className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-300 disabled:bg-gray-100"
+                    className="mt-1 w-full p-2 border border-white/10 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-300 disabled:bg-gray-100"
                   >
                     {fitnessLevels.map((level) => (
                       <option key={level.value} value={level.value}>
@@ -817,7 +775,7 @@ const Profile = () => {
                     value={formData.workoutExperience}
                     onChange={handleInputChange}
                     disabled={!editing}
-                    className="mt-1 w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-300 disabled:bg-gray-100"
+                    className="mt-1 w-full p-2 border border-white/10 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-300 disabled:bg-gray-100"
                   >
                     {workoutExperiences.map((exp) => (
                       <option key={exp.value} value={exp.value}>
@@ -842,7 +800,7 @@ const Profile = () => {
                           checked={formData.goals.includes(goal.value)}
                           onChange={handleInputChange}
                           disabled={!editing}
-                          className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          className="rounded border-white/10 text-primary focus:ring-indigo-500"
                         />
                         <span className="text-sm text-gray-700">
                           {goal.label}
@@ -855,10 +813,10 @@ const Profile = () => {
             </Card>
 
             {/* Workout Preferences */}
-            <Card className="bg-white shadow-modern border-0">
+            <Card className="glass-panel border-0">
               <CardHeader className="pb-4">
-                <CardTitle className="text-xl font-bold text-gray-900 flex items-center">
-                  <Target className="h-5 w-5 mr-2 text-indigo-600" />
+                <CardTitle className="text-xl font-bold text-text flex items-center">
+                  <Target className="h-5 w-5 mr-2 text-primary" />
                   Workout Preferences
                 </CardTitle>
               </CardHeader>
@@ -911,7 +869,7 @@ const Profile = () => {
                           )}
                           onChange={handleInputChange}
                           disabled={!editing}
-                          className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                          className="rounded border-white/10 text-primary focus:ring-indigo-500"
                         />
                         <span className="text-sm text-gray-700">
                           {equipment.label}
@@ -926,6 +884,7 @@ const Profile = () => {
         </div>
       </div>
     </div>
+    </PageTransition>
   );
 };
 
