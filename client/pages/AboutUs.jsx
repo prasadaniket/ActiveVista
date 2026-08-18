@@ -5,7 +5,7 @@
 */
 import React, { useEffect, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Target, Zap, Heart, Shield, Users, TrendingUp, Award, Rocket } from 'lucide-react';
+import { Target, Zap, Heart, Shield, TrendingUp } from 'lucide-react';
 import ScrollReveal, { StaggerContainer, StaggerItem } from '../src/components/ScrollReveal';
 import ParticleField from '../src/components/ParticleField';
 import AnimatedCounter from '../src/components/AnimatedCounter';
@@ -46,13 +46,6 @@ const values = [
     description: 'Bank-grade encryption for your fitness data. Your progress is yours — always private, always protected.',
     gradient: 'from-emerald-500 to-teal-500',
   },
-];
-
-const stats = [
-  { value: 50000, suffix: '+', label: 'Active Athletes', icon: Users },
-  { value: 2, suffix: 'M+', label: 'Workouts Logged', icon: TrendingUp },
-  { value: 98, suffix: '%', label: 'User Satisfaction', icon: Award },
-  { value: 150, suffix: '+', label: 'Countries', icon: Rocket },
 ];
 
 const AboutUs = ({ currentUser }) => {

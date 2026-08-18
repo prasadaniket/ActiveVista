@@ -14,6 +14,7 @@ import connectDB from "./config/db.js";
 import { errorHandler, notFound } from "./middleware/errorMiddleware.js";
 import UserRoutes from "./routes/userRoute.js";
 import WorkoutRoutes from "./routes/workoutRoute.js";
+import AIRoutes from "./routes/aiRoute.js";
 
 // Load environment variables
 dotenv.config();
@@ -128,6 +129,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/user", UserRoutes);
 app.use("/api/workout", WorkoutRoutes);
+app.use("/api/ai", AIRoutes);
 
 // Health check endpoint
 app.get("/health", (req, res) => {

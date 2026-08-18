@@ -19,6 +19,40 @@ import { queryKeys } from "../../api/queries";
 import { useToast } from "../ui/Toast";
 
 const WorkoutCard = ({ workout, onDelete, showDelete = false }) => {
+  const queryClient = useQueryClient();
+  const { addToast } = useToast();
+
+  const { mutate: completeWorkout, isPending: completing } = useMutation({
+    mutationFn: async () => {
+      if (!workout?._id) throw new Error("Invalid workout ID");
+      return await axiosInstance.post(`/user/workout/${workout._id}/complete`);
+    },
+    onSuccess: () => {
+      window.dispatchEvent(new CustomEvent('workout:completed'));
+      addToast({ type: "success", title: "Success", message: "Workout completed!" });
+      queryClient.invalidateQueries({ queryKey: queryKeys.todaysWorkouts("") });
+      queryClient.invalidateQueries({ queryKey: queryKeys.workoutHistory("") });
+      queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
+      queryClient.invalidateQueries({ queryKey: queryKeys.profile });
+    },
+    onError: (e) => {
+      console.error('Failed to complete workout', e);
+      if (e?.response) {
+        const status = e.response.status;
+        if (status === 404) {
+          addToast({ type: "error", title: "Not Found", message: "Workout not found. It may have already been completed." });
+          queryClient.invalidateQueries({ queryKey: queryKeys.todaysWorkouts("") });
+        } else if (status >= 500) {
+          addToast({ type: "error", title: "Server Error", message: "Server error. Please try again later." });
+        } else {
+          addToast({ type: "error", title: "Error", message: e.response.data?.message || 'Unexpected error while completing workout.' });
+        }
+      } else {
+        addToast({ type: "error", title: "Network Error", message: "Failed to connect to server. Please try again." });
+      }
+    }
+  });
+
   if (!workout) return null;
   
   // Handle both old format (workoutString) and new format (direct properties)
@@ -49,43 +83,6 @@ const WorkoutCard = ({ workout, onDelete, showDelete = false }) => {
   const isCompleted = Boolean(
     workout.completed || workout.status === 'completed' || workout.completedAt
   );
-
-  const queryClient = useQueryClient();
-  const { addToast } = useToast();
-
-  const { mutate: completeWorkout, isPending: completing } = useMutation({
-    mutationFn: async () => {
-      if (!workout._id) throw new Error("Invalid workout ID");
-      return await axiosInstance.post(`/user/workout/${workout._id}/complete`);
-    },
-    onSuccess: () => {
-      window.dispatchEvent(new CustomEvent('workout:completed'));
-      addToast({ type: "success", title: "Success", message: "Workout completed!" });
-      queryClient.invalidateQueries({ queryKey: queryKeys.todaysWorkouts("") });
-      queryClient.invalidateQueries({ queryKey: queryKeys.workoutHistory("") });
-      queryClient.invalidateQueries({ queryKey: queryKeys.dashboard });
-      queryClient.invalidateQueries({ queryKey: queryKeys.profile });
-    },
-    onError: (e) => {
-      console.error('Failed to complete workout', e);
-      if (e?.response) {
-        const status = e.response.status;
-        if (status === 404) {
-          addToast({ type: "error", title: "Not Found", message: "Workout not found. It may have already been completed." });
-          // Force a refetch anyway to sync UI and remove the ghost workout
-          queryClient.invalidateQueries({ queryKey: queryKeys.todaysWorkouts("") });
-        } else if (status >= 500) {
-          addToast({ type: "error", title: "Server Error", message: "Server error. Please try again later." });
-        } else {
-          addToast({ type: "error", title: "Error", message: e.response.data?.message || 'Unexpected error while completing workout.' });
-        }
-      } else if (e?.request) {
-        addToast({ type: "error", title: "Network Error", message: "Could not connect to server. Please ensure backend is running." });
-      } else {
-        addToast({ type: "error", title: "Error", message: e.message });
-      }
-    }
-  });
   
   // Get workout type color
   const getWorkoutTypeColor = (title) => {

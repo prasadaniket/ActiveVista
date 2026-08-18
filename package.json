@@ -1,0 +1,32 @@
+{
+  "name": "activevista",
+  "version": "1.0.0",
+  "description": "ActiveVista - Next-Gen Fitness Intelligence Command Center by UniCord",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"cyan,magenta\" \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "dev:all": "concurrently -n \"SERVER,CLIENT,AI-ENGINE\" -c \"cyan,magenta,yellow\" \"npm run dev --prefix server\" \"npm run dev --prefix client\" \"python ai-engine/run.py\"",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "dev:ai": "python ai-engine/run.py",
+    "batch:push": "node scripts/batch_push.js",
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client",
+    "build": "npm run build --prefix client",
+    "lint": "npm run lint --prefix client",
+    "start": "npm start --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "keywords": [
+    "fitness",
+    "intelligence",
+    "react19",
+    "express5",
+    "fastapi",
+    "unicord"
+  ],
+  "author": "UniCord",
+  "license": "MIT"
+}

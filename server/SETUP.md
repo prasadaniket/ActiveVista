@@ -18,6 +18,9 @@ NODE_ENV=development
 
 # Client Origin (CORS Whitelist)
 CLIENT_URL=http://localhost:5173
+
+# Python AI Engine URL
+PYTHON_SERVICE_URL=http://localhost:8000
 ```
 
 ---
@@ -58,7 +61,9 @@ server/
 │   ├── userModel.js       # User account schema with password hashing hooks
 │   └── Workout.js         # Workout logging schema and metric calculations
 ├── routes/
-│   └── userRoute.js       # REST route mappings for /api/user endpoints
+│   ├── userRoute.js       # REST route mappings for /api/user endpoints
+│   ├── workoutRoute.js    # REST route mappings for /api/workout endpoints
+│   └── aiRoute.js         # Proxy gateway to Python AI microservice with fallback
 ├── utils/
 │   └── generateToken.js   # JWT token generation utilities
 ├── server.js              # Express 5 application bootstrap and security middleware
@@ -79,6 +84,8 @@ server/
 | `GET` | `/api/user/dashboard` | Protected | Aggregates workout counts and caloric expenditure metrics |
 | `GET` | `/api/user/workout` | Protected | Queries workout logs filtered by target date |
 | `POST` | `/api/user/workout` | Protected | Records new completed workout entry |
+| `POST` | `/api/ai/recovery` | Protected | Proxies physiological recovery & fatigue calculation to Python AI |
+| `POST` | `/api/ai/plan` | Protected | Proxies 30-day tactical periodization generation to Python AI |
 
 ---
 
@@ -86,5 +93,5 @@ server/
 
 * **Graceful Lifecycle Management**: Handles SIGINT/SIGTERM signals to safely terminate database sockets.
 * **Stateless Authorization**: JWT authentication with standardized bearer token validation.
+* **Resilient Failover**: If the Python AI microservice is temporarily unavailable, the gateway serves built-in heuristic calculations without throwing 500 errors.
 * **Defensive Middleware Pipeline**: Express Rate Limiting, Mongo Sanitize for NoSQL injection prevention, HPP, and Helmet security headers.
-* **Centralized Error Handling**: Standardized JSON error response format across all endpoints.

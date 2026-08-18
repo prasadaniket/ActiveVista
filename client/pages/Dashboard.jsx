@@ -22,10 +22,12 @@ import {
   usePastPlans,
   useRecommendedPlans,
   useTodaysWorkouts,
+  useProfile,
   queryKeys
 } from "../src/api/queries";
 import WeeklyStatCard from "../src/components/cards/WeeklyStatCard";
 import CategoryChart from "../src/components/cards/CategoryChart";
+import AIRecoveryCard from "../src/components/cards/AIRecoveryCard";
 import Recom from "../src/components/cards/Recom";
 import AddWorkout from "../src/components/AddWorkout";
 import WorkoutCard from "../src/components/cards/WorkoutCard";
@@ -43,6 +45,7 @@ const Dashboard = () => {
   const { data: pastPlans, isLoading: pastPlansLoading } = usePastPlans();
   const { data: recommendedPlansRaw, isLoading: recoLoading, isError } = useRecommendedPlans();
   const { data: todaysWorkouts } = useTodaysWorkouts("");
+  const { data: userProfile } = useProfile();
   
   const [workout, setWorkout] = useState(`#Legs\n-Back Squat\n-5 setsX15 reps\n-30 kg\n-10 min`);
   const { addToast } = useToast();
@@ -220,6 +223,11 @@ const Dashboard = () => {
             </StaggerItem>
           ))}
         </StaggerContainer>
+
+        {/* AI Physiological Telemetry */}
+        <ScrollReveal variant="fadeUp" delay={0.15} className="mb-8">
+          <AIRecoveryCard profileData={userProfile} dashboardData={data} />
+        </ScrollReveal>
 
         {/* Charts and Add Workout Section */}
         <ScrollReveal variant="fadeUp" delay={0.2} className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">

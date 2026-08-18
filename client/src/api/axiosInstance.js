@@ -1,8 +1,10 @@
 import axios from "axios";
 
-// Set base URL here - centralized configuration
+// Set base URL here - centralized configuration with dynamic env support
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
+
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:4000/api", // Backend server URL
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },

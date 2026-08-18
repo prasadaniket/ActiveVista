@@ -2,7 +2,7 @@
   Toast.jsx — Animated toast notification system
   Replaces all alert() calls with premium glassmorphism toasts
 */
-import React, { useState, useEffect, useCallback, createContext, useContext } from 'react';
+import React, { useState, useCallback, createContext, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, X, AlertTriangle, Info, Flame } from 'lucide-react';
 

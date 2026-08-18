@@ -60,7 +60,7 @@ const CategoryChart = ({ data, stepsData }) => {
 
   // Build segments using strokeDasharray offsets
   let cumulative = 0;
-  const segments = categories.map((c, idx) => {
+  const segments = categories.map((c) => {
     const val = Math.max(0, Number(c.value) || 0);
     const fraction = val / safeTotal;
     const length = fraction * circumference;
