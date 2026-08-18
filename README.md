@@ -1,146 +1,146 @@
 <div align="center">
 
-# 💎 ACTIVE VISTA
-### **Next-Gen Fitness Intelligence Command Center**
-#### *A flagship product engineered under the UniCord digital ecosystem*
+# ActiveVista
+### Next-Generation Fitness Intelligence Command Center
+**An Enterprise Product Engineered under the UniCord Digital Ecosystem**
 
 <br/>
 
-[![UniCord Product](https://img.shields.io/badge/Product_By-UniCord-0052FF?style=for-the-badge&logo=shield&logoColor=white)](https://github.com/prasadaniket)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
-[![React 19](https://img.shields.io/badge/React-19.1-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
-[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4.1-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
-[![Node.js](https://img.shields.io/badge/Node.js-20+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Express 5](https://img.shields.io/badge/Express-5.1-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
-[![MongoDB](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![UniCord Product](https://img.shields.io/badge/Organization-UniCord-0052FF?style=flat-square&logo=shield&logoColor=white)](https://github.com/prasadaniket)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
+[![React 19](https://img.shields.io/badge/React-19.1-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
+[![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4.1-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-20+-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Express 5](https://img.shields.io/badge/Express-5.1-000000?style=flat-square&logo=express&logoColor=white)](https://expressjs.com/)
+[![MongoDB Atlas](https://img.shields.io/badge/MongoDB-Atlas-47A248?style=flat-square&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 
 <br/>
 
-`DEEP VOID BLACK (#030712)` • `ELECTRIC GLOW BLUE (#1261A0)` • `GLASSMORPHIC ARCHITECTURE`
+`Deep Void Architecture` | `Glassmorphism Design System` | `Telemetry & Metric Analytics`
 
 </div>
 
 ---
 
-## 🌌 Overview
+## Executive Summary
 
-**ActiveVista** is a full-stack, enterprise-grade **Fitness Intelligence Platform** developed by **UniCord**. Designed for elite athletes, fitness enthusiasts, and personal training protocols, ActiveVista transforms routine workout tracking into a cinematic command center.
+**ActiveVista** is a full-stack, enterprise-grade Fitness Intelligence Platform engineered by **UniCord**. Designed for athletes, health enthusiasts, and high-performance training regimens, ActiveVista bridges raw physical telemetry with actionable digital analytics through a centralized, high-contrast dashboard.
 
-By combining real-time physiological metric tracking, interactive WebGL/Canvas dynamic motion effects, and strict backend security hardening, ActiveVista provides a synchronized dashboard for daily fitness performance, calorie metrics, and target mastery.
+The application delivers real-time physiological metric tracking, interactive WebGL and dynamic vector canvas motion fields, end-to-end JWT session security, and resilient NoSQL database persistence.
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 <div align="center">
-  <img src="client/public/architect/tech_stack.png" width="85%" alt="ActiveVista Tech Stack Blueprint" />
+  <img src="client/public/architect/tech_stack.png" width="85%" alt="ActiveVista System Architecture Blueprint" />
 </div>
 
-ActiveVista is architected around a resilient, decoupled client-server paradigm:
+ActiveVista operates on a decoupled client-server model engineered for low latency, modular maintainability, and horizontal scalability:
 
-### 1. ⚡ Athlete Command Interface (`/client`)
-- **React 19 & Vite 7**: Ultra-responsive SPA client with near-instant hot module replacement (HMR) and optimized modern bundle chunking.
-- **Tailwind CSS v4 Engine**: Custom void design system with deep layered glassmorphic backdrops, radial blue glows, and sleek typography tokens.
-- **Interactive Waves & Kinetic Motion**: Powered by custom Canvas Simplex noise fields, Three.js modules, and **Framer Motion 12** physics springs.
-- **Accessible Primitives**: Built upon **Radix UI** primitives (`Dialog`, `HoverCard`, `Tooltip`, `Avatar`) for seamless keyboard and screen-reader accessibility.
-- **State & Data Layer**: Client routing via **React Router 7**, centralized API pipelines via **Axios**, and reactive state management.
+### 1. Athlete Interface Service (`client/`)
+* **Core Framework**: React 19 and Vite 7 bundle pipeline for near-instant hot module replacement (HMR) and optimized modern JavaScript delivery.
+* **Design System**: Tailwind CSS v4 featuring a customized glassmorphic token architecture with backdrop blur filters, dark-mode void contrast layers, and dynamic blue accents.
+* **Kinetic & Canvas Motion**: Multi-layered Perlin/Simplex noise particle wave simulation via HTML5 Canvas and Three.js modules, coupled with Framer Motion physics-based micro-interactions.
+* **Component Primitives**: Radix UI primitive layer providing WCAG-compliant accessibility across dialogs, tooltips, navigation menus, and form elements.
+* **Routing & Network State**: React Router 7 paired with configured Axios interceptors for automated authentication header injection and global error handling.
 
-### 2. 🛡️ Intelligence Engine & API (`/server`)
-- **Runtime**: **Node.js (>=18.0.0)** with **Express 5**.
-- **Defense-in-Depth Security**: Stateless JSON Web Token (**JWT**) verification, **Bcrypt** cryptographic password hashing, **Helmet** HTTP header protection, **HPP** (HTTP Parameter Pollution) prevention, **Express Rate Limiting**, and **Mongo Sanitize** to defend against NoSQL injection vectors.
-- **Data Vault**: High-availability cloud persistence via **MongoDB Atlas** and **Mongoose 8** schema contracts with automated calculation hooks.
+### 2. Core API & Intelligence Service (`server/`)
+* **Runtime**: Node.js (>=18.0.0 LTS) running on the Express 5 framework.
+* **Security Layer**: Stateless JSON Web Token (JWT) authorization, Bcrypt cryptographic password hashing, Helmet HTTP protection headers, HTTP Parameter Pollution (HPP) shielding, automated rate limiting, and NoSQL injection query sanitization.
+* **Data Vault**: MongoDB Atlas cloud cluster with Mongoose 8 object document modeling, schema validation, and pre-save lifecycle hooks.
 
 <br/>
 
 <div align="center">
-  <img src="client/public/architect/dashboard_flow.png" width="85%" alt="Dashboard Execution Flow" />
+  <img src="client/public/architect/dashboard_flow.png" width="85%" alt="ActiveVista Dashboard Execution Flow" />
 </div>
 
 ---
 
-## ⚡ Core Capabilities
+## Core Capabilities
 
-| Capability | Technical Implementation | Athlete Experience |
+| Module | Architectural Implementation | Business & User Impact |
 | :--- | :--- | :--- |
-| **📊 Tactical Dashboard** | Aggregated MongoDB analytics & interactive chart widgets | Instant overview of total workouts, cumulative calories burned, and target pacing. |
-| **🏋️ Workout Logging Engine** | Dynamic categorization (Cardio, Strength, Flexibility, Endurance) | Granular entry of sets, reps, weight, duration, and calorie expenditure with date tags. |
-| **🌊 Cinematic Canvas Waves** | Perlin/Simplex noise vector field rendered on HTML5 Canvas | Immersive cursor-reactive backdrop creating a living cyberpunk command atmosphere. |
-| **🔒 Authenticated Profile Vault** | Secure JWT handshakes with Axios interceptors & auto-refresh | Complete data privacy with profile customization, workout records, and metrics history. |
-| **🖼️ Active Media Gallery** | Responsive visual showcase with optimized layout grids | Visual repository documenting athlete transformations and training aesthetics. |
+| **Tactical Dashboard** | Aggregated MongoDB analytics and interactive data visualizations | Delivers instant operational oversight on total workouts, cumulative caloric burn, and goal progression. |
+| **Workout Logging Engine** | Granular multi-category entry with date tagging | Enables athletes to record sessions with precise sets, reps, weight loads, duration, and energy expenditure metrics. |
+| **Dynamic Vector Waves** | Math-driven Simplex noise vector field rendered on Canvas | Immersive cursor-reactive backdrop creating an elevated, modern user experience. |
+| **Authenticated User Vault** | Cryptographic session handshakes via secure HTTP authorization | Guarantees data privacy, athlete profile management, and historical session integrity. |
+| **Media Repository** | High-performance responsive media grid | Showcases athletic progression, transformation logs, and brand aesthetics. |
 
 ---
 
-## 🧭 Navigation & Sitemap
+## Navigation Topology
 
 <div align="center">
-  <img src="client/public/architect/sitemap.png" width="85%" alt="ActiveVista Navigation Sitemap" />
+  <img src="client/public/architect/sitemap.png" width="85%" alt="ActiveVista Navigation Topology" />
 </div>
 
 ---
 
-## 📂 Repository Structure
+## Directory Structure
 
 ```tree
 ActiveVista/
-├── client/                      # Unified Frontend Athlete Client
-│   ├── public/                  # Static assets, schematics & blueprints
+├── client/                      # Frontend Single Page Application
+│   ├── public/                  # Static assets and architectural schematics
 │   │   ├── architect/           # Architecture diagrams
 │   │   └── ...
 │   ├── src/
-│   │   ├── api/                 # Axios interceptors & API client instance
-│   │   ├── components/          # Reusable UI & tactical components
-│   │   │   ├── cards/           # Analytic metric cards & workout displays
-│   │   │   ├── home_compo/      # Hero section, feature grids, FAQ, CTA
-│   │   │   └── ui/              # Waves canvas, dialogs, buttons, toasts
+│   │   ├── api/                 # Axios interceptors and API endpoints
+│   │   ├── components/          # Reusable UI and layout components
+│   │   │   ├── cards/           # Analytic metric cards and workout logs
+│   │   │   ├── home_compo/      # Hero section, feature grids, and landing views
+│   │   │   └── ui/              # Canvas waves, dialogs, buttons, and alerts
 │   │   ├── pages/               # Dashboard, Workout, Profile, Gallery, AboutUs
-│   │   ├── App.jsx              # Application router & authentication provider
-│   │   ├── index.css            # Tailwind v4 theme & glassmorphic styles
-│   │   └── main.jsx             # React 19 entrypoint
+│   │   ├── App.jsx              # Application router and session provider
+│   │   ├── index.css            # Tailwind CSS design system tokens
+│   │   └── main.jsx             # React 19 application entry point
 │   ├── package.json
 │   └── vite.config.js
 │
-├── server/                      # Tactical Backend REST API Service
-│   ├── config/                  # MongoDB Atlas connection lifecycle
-│   ├── controllers/             # User auth & workout business logic
-│   ├── middleware/              # Auth guard & error handling middleware
+├── server/                      # Backend REST API Service
+│   ├── config/                  # MongoDB Atlas connection manager
+│   ├── controllers/             # Authentication and workout business controllers
+│   ├── middleware/              # Authentication guards and centralized error handlers
 │   ├── models/                  # Mongoose data schemas (User, Workout)
 │   ├── routes/                  # RESTful API route definitions
-│   ├── utils/                   # JWT generation & cryptographic helpers
-│   ├── server.js                # Express 5 server initialization & security filters
+│   ├── utils/                   # Token utilities and cryptographic helpers
+│   ├── server.js                # Express 5 initialization and security middleware
 │   └── package.json
 │
 ├── LICENSE                      # MIT License (UniCord)
-└── README.md                    # System Documentation
+└── README.md                    # Project Documentation
 ```
 
 ---
 
-## 🔌 RESTful API Reference
+## API Specification
 
-All backend API routes are prefixed with `/api`.
+All backend endpoints are scoped under the `/api` namespace.
 
-### 🔑 Authentication & User Protocols
-- `POST /api/user/signup` — Register new athlete profile with encrypted credentials.
-- `POST /api/user/signin` — Authenticate user and issue secure JWT bearer token.
-- `GET  /api/user/profile` — Fetch currently authenticated athlete profile data *(Protected)*.
+### Authentication & Athlete Profile
+* `POST /api/user/signup` — Create a new athlete account with encrypted credentials.
+* `POST /api/user/signin` — Authenticate credentials and return a signed JWT token.
+* `GET  /api/user/profile` — Retrieve authenticated user profile *(Requires Bearer Token)*.
 
-### 📈 Intelligence & Dashboard Protocols
-- `GET  /api/user/dashboard` — Fetch calculated metrics, daily calories burned, and workout analytics *(Protected)*.
+### Metrics & Analytics
+* `GET  /api/user/dashboard` — Fetch aggregated workout counts, calories burned, and categorical analytics *(Requires Bearer Token)*.
 
-### 🏋️ Workout Protocols
-- `GET  /api/user/workout` — Retrieve workout records filtered by date parameter *(Protected)*.
-- `POST /api/user/workout` — Record new workout session with category, sets, reps, and calories *(Protected)*.
+### Workout Operations
+* `GET  /api/user/workout` — Query recorded workout sessions filtered by target date *(Requires Bearer Token)*.
+* `POST /api/user/workout` — Register a completed workout session with category and performance metrics *(Requires Bearer Token)*.
 
 ---
 
-## 🚀 Quick Start Guide
+## Setup & Deployment Guide
 
 ### Prerequisites
-- **Node.js**: v18.0.0 or higher
-- **npm**: v9.0.0 or higher
-- **MongoDB Atlas** cluster URI
+* **Node.js**: Version 18.0.0 or higher
+* **npm**: Version 9.0.0 or higher
+* **MongoDB**: Active MongoDB Atlas URI or local MongoDB instance
 
-### 1. Clone the Repository
+### 1. Clone Repository
 ```bash
 git clone https://github.com/prasadaniket/ActiveVista.git
 cd ActiveVista
@@ -150,69 +150,68 @@ cd ActiveVista
 Create a `.env` file in the `server/` directory:
 
 ```env
-# Server Network Config
+# Network Configuration
 PORT=8080
 NODE_ENV=development
 
-# MongoDB Atlas URI
-MONGODB_URL=your_mongodb_connection_string
+# Database Connection
+MONGODB_URL=your_mongodb_connection_uri
 
-# JWT Secret Keys
-JWT=your_ultra_secure_jwt_secret_key
-JWT_REFRESH=your_ultra_secure_refresh_jwt_key
+# JSON Web Token Secret Keys
+JWT=your_secure_jwt_secret_key
+JWT_REFRESH=your_secure_refresh_jwt_key
 
-# Client CORS Origin
+# CORS Client Origin
 CLIENT_URL=http://localhost:5173
 ```
 
 ### 3. Install Dependencies
 ```bash
-# Install Server Dependencies
+# Install backend dependencies
 npm install --prefix server
 
-# Install Client Dependencies
+# Install frontend dependencies
 npm install --prefix client
 ```
 
-### 4. Launch Development Servers
+### 4. Run Development Environment
 
-**Run Server:**
+**Start API Server:**
 ```bash
 cd server
 npm run dev
-# Server runs on http://localhost:8080
+# Server listening on http://localhost:8080
 ```
 
-**Run Client (in a separate terminal):**
+**Start Frontend Application (in a separate terminal):**
 ```bash
 cd client
 npm run dev
-# Client runs on http://localhost:5173
+# Application accessible on http://localhost:5173
 ```
 
 ---
 
-## 🛡️ Security Hardening
+## Security Compliance & Hardening
 
-ActiveVista implements robust security standards:
-- **Rate Limiting**: Throttles brute-force attempts on sensitive API routes.
-- **Sanitization**: Protects against NoSQL query injection across all payload bodies.
-- **Helmet Security Headers**: Enforces strict CSP and MIME sniffing restrictions.
-- **HPP Shield**: Prevents HTTP Parameter Pollution attacks.
-- **Stateless Tokens**: Expirable JWTs verified at the gateway middleware level.
+ActiveVista adheres to strict application security standards:
+* **Stateless Token Management**: Short-lived JWTs validated on every protected API call.
+* **NoSQL Injection Defense**: Automated parameter sanitization across query strings and request bodies.
+* **Brute-Force Rate Limiting**: Request threshold policies applied to authentication endpoints.
+* **Security Headers**: Standardized Helmet policy configurations preventing XSS, MIME-sniffing, and clickjacking.
+* **CORS Whitelisting**: Strict origin restrictions preventing unauthorized cross-origin data access.
 
 ---
 
-## 📜 License
+## License
 
-This project is licensed under the **MIT License** — maintained and distributed by **UniCord**.  
-See the [LICENSE](LICENSE) file for complete terms.
+This software is released under the **MIT License** by **UniCord**.  
+Please refer to the [LICENSE](LICENSE) file for the complete terms and conditions.
 
-<!-- UniCord Product Ecosystem - ActiveVista v1.0 -->
 <div align="center">
 <br/>
 
-**© 2026 UNICORD. ALL RIGHTS RESERVED.**  
-*Engineered for Peak Human Performance.*
+**Copyright (c) 2026 UniCord. All rights reserved.**  
+*Enterprise Health & Performance Technologies.*
 
 </div>

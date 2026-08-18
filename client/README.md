@@ -1,12 +1,47 @@
-# React + Vite
+# ActiveVista Frontend Client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The frontend client for ActiveVista is built with React 19, Vite 7, and Tailwind CSS v4, engineered for low-latency state synchronization and high-performance UI rendering.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Technical Stack
 
-## Expanding the ESLint configuration
+* **Core Framework**: React 19 (`react`, `react-dom`)
+* **Build Engine**: Vite 7 (`@vitejs/plugin-react`)
+* **Styling Layer**: Tailwind CSS v4 (`@tailwindcss/vite`, `tailwindcss`)
+* **Motion & Animation**: Framer Motion 12, Three.js, and HTML5 Canvas Simplex Noise Vector Engine
+* **Component Architecture**: Radix UI Primitives (`@radix-ui/react-*`)
+* **Form & Validation**: React Hook Form with Zod schema resolvers
+* **State & Networking**: Axios with centralized HTTP interceptors, Zustand, and TanStack Query
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Getting Started
+
+### Installation
+```bash
+npm install
+```
+
+### Development Server
+```bash
+npm run dev
+```
+
+### Production Build
+```bash
+npm run build
+```
+
+### Preview Production Build
+```bash
+npm run preview
+```
+
+---
+
+## Architecture Standards
+
+* **Glassmorphism Design System**: Custom void dark-mode tokens defined in `src/index.css`.
+* **Component Isolation**: Reusable layout components partitioned under `src/components/`, page views under `src/pages/`, and networking abstractions under `src/api/`.
+* **Accessibility**: Full compliance with WCAG standards enabled via Radix UI primitives.
