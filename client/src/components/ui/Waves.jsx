@@ -4,8 +4,8 @@ import { createNoise2D } from 'simplex-noise'
 
 export function Waves({
   className = '',
-  strokeColor = 'rgba(18, 97, 160, 0.25)',
-  backgroundColor = 'transparent',
+  strokeColor = '#ffffff',
+  backgroundColor = '#000000',
   pointerSize = 0.5,
 }) {
   const containerRef = useRef(null)
@@ -39,7 +39,7 @@ export function Waves({
     setSize()
     setLines()
 
-    // IntersectionObserver to pause heavy rendering when scrolled out of view
+    // IntersectionObserver halts computation when scrolled past the hero section
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -59,7 +59,7 @@ export function Waves({
       resizeTimer = setTimeout(() => {
         setSize()
         setLines()
-      }, 150)
+      }, 100)
     }
 
     const onMouseMove = (e) => {
@@ -107,11 +107,11 @@ export function Waves({
     pathsRef.current.forEach((path) => path.remove())
     pathsRef.current = []
 
-    // Optimized spacing: reduces point computations by ~93% while preserving silky wave look
-    const xGap = 24
-    const yGap = 16
+    // Restored original dense wave spacing
+    const xGap = 8
+    const yGap = 8
 
-    const oWidth = width + 100
+    const oWidth = width + 200
     const oHeight = height + 30
 
     const totalLines = Math.ceil(oWidth / xGap)
@@ -135,10 +135,10 @@ export function Waves({
       }
 
       const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+      path.classList.add('a__line', 'js-line')
       path.setAttribute('fill', 'none')
       path.setAttribute('stroke', strokeColor)
       path.setAttribute('stroke-width', '1')
-      path.style.willChange = 'd'
 
       fragment.appendChild(path)
       pathsRef.current.push(path)
@@ -181,7 +181,7 @@ export function Waves({
         const p = points[j]
         const move =
           noise(
-            (p.x + time * 0.006) * 0.003,
+            (p.x + time * 0.008) * 0.003,
             (p.y + time * 0.003) * 0.002
           ) * 8
 
@@ -191,21 +191,23 @@ export function Waves({
         const dx = p.x - mouse.sx
         const dy = p.y - mouse.sy
         const d = Math.hypot(dx, dy)
-        const l = Math.max(160, mouse.vs)
+        const l = Math.max(175, mouse.vs)
 
         if (d < l) {
           const s = 1 - d / l
           const f = Math.cos(d * 0.001) * s
-          p.cursor.vx += Math.cos(mouse.a) * f * l * mouse.vs * 0.0003
-          p.cursor.vy += Math.sin(mouse.a) * f * l * mouse.vs * 0.0003
+          p.cursor.vx += Math.cos(mouse.a) * f * l * mouse.vs * 0.00035
+          p.cursor.vy += Math.sin(mouse.a) * f * l * mouse.vs * 0.00035
         }
 
-        p.cursor.vx += (0 - p.cursor.x) * 0.015
-        p.cursor.vy += (0 - p.cursor.y) * 0.015
-        p.cursor.vx *= 0.94
-        p.cursor.vy *= 0.94
+        p.cursor.vx += (0 - p.cursor.x) * 0.01
+        p.cursor.vy += (0 - p.cursor.y) * 0.01
+        p.cursor.vx *= 0.95
+        p.cursor.vy *= 0.95
         p.cursor.x += p.cursor.vx
         p.cursor.y += p.cursor.vy
+        p.cursor.x = Math.min(50, Math.max(-50, p.cursor.x))
+        p.cursor.y = Math.min(50, Math.max(-50, p.cursor.y))
       }
     }
   }
@@ -224,11 +226,11 @@ export function Waves({
       if (points.length < 2 || !paths[lIndex]) continue
 
       const firstPoint = moved(points[0], false)
-      let d = `M ${firstPoint.x.toFixed(1)} ${firstPoint.y.toFixed(1)}`
+      let d = `M ${firstPoint.x} ${firstPoint.y}`
 
       for (let i = 1; i < points.length; i++) {
         const current = moved(points[i])
-        d += ` L ${current.x.toFixed(1)} ${current.y.toFixed(1)}`
+        d += `L ${current.x} ${current.y}`
       }
 
       paths[lIndex].setAttribute('d', d)
@@ -252,7 +254,7 @@ export function Waves({
 
     mouse.v = d
     mouse.vs += (d - mouse.vs) * 0.1
-    mouse.vs = Math.min(80, mouse.vs)
+    mouse.vs = Math.min(100, mouse.vs)
     mouse.lx = mouse.x
     mouse.ly = mouse.y
     mouse.a = Math.atan2(dy, dx)
@@ -271,7 +273,7 @@ export function Waves({
   return (
     <div
       ref={containerRef}
-      className={`waves-component relative overflow-hidden pointer-events-none ${className}`}
+      className={`waves-component relative overflow-hidden ${className}`}
       style={{
         backgroundColor,
         position: 'absolute',
@@ -281,16 +283,15 @@ export function Waves({
         padding: 0,
         width: '100%',
         height: '100%',
-        contain: 'strict',
+        overflow: 'hidden',
         '--x': '-0.5rem',
         '--y': '50%',
       }}
     >
       <svg
         ref={svgRef}
-        className="block w-full h-full"
+        className="block w-full h-full js-svg"
         xmlns="http://www.w3.org/2000/svg"
-        style={{ contain: 'paint' }}
       />
       <div
         className="pointer-dot"
