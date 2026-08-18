@@ -7,7 +7,7 @@ import React, { useRef, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { ArrowRight, Play, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import InteractiveHeroBg from '../InteractiveHeroBg';
+import Waves from '../ui/Waves';
 import AnimatedCounter from '../AnimatedCounter';
 
 /* ── Magnetic button wrapper ─────────────────────────────────────── */
@@ -56,8 +56,13 @@ const HeroSection = ({ token }) => {
       {/* ── Layer 0: atmospheric cosmos bg ── */}
       <div className="absolute inset-0 bg-cosmos bg-noise bg-scanlines" />
 
-      {/* ── Layer 1: cursor-reactive canvas (the interactive part!) ── */}
-      <InteractiveHeroBg className="z-[1]" />
+      {/* ── Layer 1: cursor-reactive wave lines (interactive background) ── */}
+      <Waves
+        className="z-[1]"
+        backgroundColor="transparent"
+        strokeColor="rgba(18, 97, 160, 0.25)"
+        pointerSize={0.5}
+      />
 
       {/* ── Layer 2: ambient gradient orbs ── */}
       <div className="absolute top-1/4 -left-32 w-[600px] h-[600px] bg-primary/6 rounded-full blur-[200px] pointer-events-none animate-breathe z-[2]" />
