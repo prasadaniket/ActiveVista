@@ -208,6 +208,7 @@ ActiveVista implements robust security standards:
 This project is licensed under the **MIT License** — maintained and distributed by **UniCord**.  
 See the [LICENSE](LICENSE) file for complete terms.
 
+<!-- UniCord Product Ecosystem - ActiveVista v1.0 -->
 <div align="center">
 <br/>
 
