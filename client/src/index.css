@@ -37,14 +37,33 @@
 }
 
 /* ========================
-   BASE LAYER 
+   BASE LAYER & LENIS CONFIG
    ======================== */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
 @layer base {
   body {
     @apply bg-void text-text font-sans antialiased;
     margin: 0;
     overflow-x: hidden;
-    scroll-behavior: smooth;
   }
 
   h1, h2, h3, h4, .font-display {
@@ -116,10 +135,12 @@
    ======================== */
 .glass {
   background: rgba(15, 21, 32, 0.6);
-  backdrop-filter: blur(24px) saturate(1.6);
-  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  backdrop-filter: blur(20px) saturate(1.6);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
   border: 1px solid rgba(18, 97, 160, 0.1);
-  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .glass:hover {
@@ -130,11 +151,13 @@
 
 .glass-card {
   background: rgba(15, 21, 32, 0.6);
-  backdrop-filter: blur(24px) saturate(1.6);
-  -webkit-backdrop-filter: blur(24px) saturate(1.6);
+  backdrop-filter: blur(20px) saturate(1.6);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6);
   border: 1px solid rgba(18, 97, 160, 0.1);
-  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   border-radius: 1rem;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .glass-card:hover {
@@ -146,11 +169,13 @@
 /* Stronger glass panel variant for internal page cards */
 .glass-panel {
   background: rgba(8, 12, 20, 0.85);
-  backdrop-filter: blur(30px) saturate(1.8);
-  -webkit-backdrop-filter: blur(30px) saturate(1.8);
+  backdrop-filter: blur(24px) saturate(1.8);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8);
   border: 1px solid rgba(18, 97, 160, 0.08);
   border-radius: 1rem;
-  transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .glass-panel:hover {
@@ -161,18 +186,20 @@
 /* Ultra-premium glass for hero cards */
 .glass-hero {
   background: rgba(15, 21, 32, 0.4);
-  backdrop-filter: blur(40px) saturate(2);
-  -webkit-backdrop-filter: blur(40px) saturate(2);
+  backdrop-filter: blur(24px) saturate(2);
+  -webkit-backdrop-filter: blur(24px) saturate(2);
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 1.5rem;
-  transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .glass-hero:hover {
   background: rgba(15, 21, 32, 0.6);
   border-color: rgba(18, 97, 160, 0.25);
   box-shadow: 0 20px 60px rgba(18, 97, 160, 0.12), 0 0 0 1px rgba(18, 97, 160, 0.1);
-  transform: translateY(-4px);
+  transform: translate3d(0, -4px, 0);
 }
 
 /* ========================

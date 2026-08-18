@@ -16,6 +16,7 @@ import Profile from "../pages/Profile";
 import AboutUs from "../pages/AboutUs";
 import Gallery from "../pages/Gallery";
 import { ToastProvider } from "../src/components/ui/Toast";
+import SmoothScroll from "../src/components/ui/SmoothScroll";
 
 const ProtectedRoute = ({ children, user }) => {
   if (!user) return <Navigate to="/auth" />;
@@ -75,40 +76,42 @@ function App() {
 
   return (
     <BrowserRouter>
-      <ToastProvider>
-        <AnimatePresence mode="wait">
-          <Routes>
-            {/* Public */}
-            <Route path="/" element={<Home currentUser={currentUser} />} />
-            <Route path="/home" element={<Home currentUser={currentUser} />} />
-            <Route path="/about" element={<AboutUs currentUser={currentUser} />} />
-            <Route path="/gallery" element={<Gallery currentUser={currentUser} />} />
-            
-            {/* Auth */}
-            <Route path="/auth" element={
-              currentUser ? <Navigate to="/dashboard" /> : <Authentication />
-            } />
+      <SmoothScroll>
+        <ToastProvider>
+          <AnimatePresence mode="wait">
+            <Routes>
+              {/* Public */}
+              <Route path="/" element={<Home currentUser={currentUser} />} />
+              <Route path="/home" element={<Home currentUser={currentUser} />} />
+              <Route path="/about" element={<AboutUs currentUser={currentUser} />} />
+              <Route path="/gallery" element={<Gallery currentUser={currentUser} />} />
+              
+              {/* Auth */}
+              <Route path="/auth" element={
+                currentUser ? <Navigate to="/dashboard" /> : <Authentication />
+              } />
 
-            {/* Protected App Shell */}
-            <Route path="/*" element={
-              <ProtectedRoute user={currentUser}>
-                <div className="flex flex-col min-h-screen bg-void">
-                  <Navbar currentUser={currentUser} />
-                  <main className="flex-1 pt-20">
-                    <Routes>
-                      <Route path="dashboard" element={<Dashboard />} />
-                      <Route path="workouts" element={<Workouts />} />
-                      <Route path="profile" element={<Profile />} />
-                      <Route path="*" element={<Navigate to="/dashboard" />} />
-                    </Routes>
-                  </main>
-                  <Footer />
-                </div>
-              </ProtectedRoute>
-            } />
-          </Routes>
-        </AnimatePresence>
-      </ToastProvider>
+              {/* Protected App Shell */}
+              <Route path="/*" element={
+                <ProtectedRoute user={currentUser}>
+                  <div className="flex flex-col min-h-screen bg-void">
+                    <Navbar currentUser={currentUser} />
+                    <main className="flex-1 pt-20">
+                      <Routes>
+                        <Route path="dashboard" element={<Dashboard />} />
+                        <Route path="workouts" element={<Workouts />} />
+                        <Route path="profile" element={<Profile />} />
+                        <Route path="*" element={<Navigate to="/dashboard" />} />
+                      </Routes>
+                    </main>
+                    <Footer />
+                  </div>
+                </ProtectedRoute>
+              } />
+            </Routes>
+          </AnimatePresence>
+        </ToastProvider>
+      </SmoothScroll>
     </BrowserRouter>
   );
 }
