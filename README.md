@@ -209,6 +209,7 @@ ActiveVista adheres to strict application security standards:
 This software is released under the **MIT License** by **UniCord**.  
 Please refer to the [LICENSE](LICENSE) file for the complete terms and conditions.
 
+<!-- UniCord Core Architecture v1.0 | Product ID: ActiveVista-2026 -->
 <div align="center">
 <br/>
 
