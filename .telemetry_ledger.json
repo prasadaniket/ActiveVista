@@ -2,24 +2,17 @@
   "project": "ActiveVista",
   "organization": "UniCord",
   "version": "1.2.0",
-  "lastUpdated": "2026-08-18T22:12:51.679Z",
-  "totalCycles": 148,
+  "lastUpdated": "2026-08-18T22:12:53.050Z",
+  "totalCycles": 149,
   "cycles": [],
   "latestSnapshot": {
-    "cycle": 148,
-    "timestamp": "2026-08-18T22:12:51.679Z",
-    "strainIndex": "59.92",
-    "recoveryCapacity": "56.18",
+    "cycle": 149,
+    "timestamp": "2026-08-18T22:12:53.050Z",
+    "strainIndex": "50.38",
+    "recoveryCapacity": "70.53",
     "entropyHash": "YWN0aXZldmlzdGEt"
   },
   "recentCycles": [
-    {
-      "cycle": 99,
-      "timestamp": "2026-08-18T22:11:37.866Z",
-      "strainIndex": "50.01",
-      "recoveryCapacity": "75.80",
-      "entropyHash": "YWN0aXZldmlzdGEt"
-    },
     {
       "cycle": 100,
       "timestamp": "2026-08-18T22:11:39.407Z",
@@ -361,6 +354,13 @@
       "timestamp": "2026-08-18T22:12:51.679Z",
       "strainIndex": "59.92",
       "recoveryCapacity": "56.18",
+      "entropyHash": "YWN0aXZldmlzdGEt"
+    },
+    {
+      "cycle": 149,
+      "timestamp": "2026-08-18T22:12:53.050Z",
+      "strainIndex": "50.38",
+      "recoveryCapacity": "70.53",
       "entropyHash": "YWN0aXZldmlzdGEt"
     }
   ]
